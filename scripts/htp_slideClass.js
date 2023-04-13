@@ -150,7 +150,7 @@ class ht4f_mediaClass {
      * @param {function} errorCallback : fucntion to call if the search failed
      */
     checkFileExists(files, successCallback, errorCallback) {
-        myDebugger.write(1, "There are " + files.length + " files to seaarch");
+        myDebugger.write(1, "There are " + files.length + " locations to search");
         if (files.length > 0) {
             let file = files.shift();
             myDebugger.write(1, "Looking for " + file + " of " + files.length);

@@ -163,7 +163,7 @@ class player {
             myPlayer.setMasterVolume(e.detail.volume);
         });
         //    this.ULE.addEventListener('full',  () => console.log('full') );
-        searchPath = [".", jsondata.assetPath, jsondata.altPath, "."];
+        searchPath = [jsondata.assetPath, jsondata.altPath, "."];
 
 		deviceSupportsVolume = this.supportsVolume();
 		if (deviceSupportsVolume !== true) {
