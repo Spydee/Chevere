@@ -425,7 +425,7 @@
 			  "ht4f_aspect_ratio",
 			  "animation"
 			],
-			"text": "LogoTumbleAnimate.gif",
+			"text": "dancing-banana.gif",
 			"style": "position: absolute; left:57.5%; top:60%; width: 25%; z-index:5;",
 			"delay": 6500,
 			"transition": {
