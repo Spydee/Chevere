@@ -35,6 +35,7 @@
             const ctrlRewindB = document.getElementById("ht4f_rewind");
             const fullscrnB = document.getElementById("ht4f_fullscrn");
             const settingsB = document.getElementById("ht4f_settings_menu");
+            
 
             var inTransition = false;
             var pauseDuringTransition = false;
