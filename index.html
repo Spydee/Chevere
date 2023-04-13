@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>High Tech Player</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="./scripts/htp_controller.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script src="./scripts/htp_animationsClass.js"></script>
+    <script src="./scripts/htp_player.js"></script>
+    <script src="./scripts/htp_slideClass.js"></script>
+
+    <link rel="stylesheet" href="./scripts/htp_player.css">
+
+    <script>
+		let slideJSONfile = 'hightech4funSlides.json';
+		let animationJSONfile = 'hightech4funAnimations.json';
+	
+        $(document).ready(function () {
+            /**** initialize ****/
+        });
+    </script>
+
+</head>
+<body>
+         <div id="ht4f_view_area" class="ht4f_view ht4f_div ht4f_view_select ht4f_float">
+            <section id="ht4f_graphics" class="ht4f_graphics_base ht4f_section ht4f_view_select ht4f_float">
+				<h2 id="PresTitle" class="PresTitle"></h2>
+                <div id="ht4f_div_graphics" class="ht4f_div ht4f_graph_area">
+                    <div id="ht4f_image_div" class="ht4f_aspect_ratio">
+                    </div>
+                    <div class="ht4f_controlGroup ht4f_div">
+                        <img class="ht4f_controls" src="controls/Background.png"  alt="Cannot load Background.png">
+                        <div id="ht4f_control_buttons" class="htf4_buttonGroup">
+                            <button id="ht4f_volume" class="ht4f_control_button"><img src="controls/Volume.png" alt="Cannot load Volume.png"></button>
+                            <button id="ht4f_rewind" class="ht4f_control_button"><img src="controls/Rewind.png" alt="Cannot load Rewind.png"></button>
+                            <button id="ht4f_prev" class="ht4f_control_button"><img src="controls/Back.png" alt="Cannot load Back.png"></button>
+                            <button id="ht4f_play" class="ht4f_control_button"><img src="controls/Play.png"  alt="Cannot load Play.png" style="display: inline;"></button>
+                            <button id="ht4f_pause" class="ht4f_control_button"><img src="controls/Pause.png"  alt="Cannot load pause.png" style="display: inline;"></button>
+                            <button id="ht4f_next" class="ht4f_control_button"><img src="controls/Forward.png"  alt="Cannot load Forward.png"></button>
+                            <button id="ht4f_settings_menu" class="ht4f_control_button"><img src="controls/Settings.png"  alt="Cannot load Settings.png"></button>
+                            <button id="ht4f_fullscrn" class="ht4f_control_button"><img src="controls/FullScreen.png"  alt="Cannot load FullScreen.png"></button>
+                        </div>
+
+                        <div id="ht4f_popupSettings" class="ht4f_settings hidden">
+                            <label for="ht4f_aspectRatio">Image Aspect Ratio</label>
+                            <select name="aspect" id="ht4f_aspectRatio">
+                                <option value="4 / 3">4 / 3</option>
+                                <option value="16 / 9">16 / 9</option>
+                            </select><br><br>
+                            <div id="wrapSelector">
+                                <label>Text Wrapping</label><br>
+                                <input type="radio" id="ht4f_btn_flex" name="ht4f_view_mode" value="FLEX" class="ht4f_radio">
+                                <label for="ht4f_btn_flex">No Wrap</label><br>
+                                <input type="radio" id="ht4f_btn_float" name="ht4f_view_mode" value="FLOAT" class="ht4f_radio" checked="checked">
+                                <label for="ht4f_btn_float">Wrap</label><br>
+                                <input type="radio" id="ht4f_btn_below" name="ht4f_view_mode" value="BELOW" class="ht4f_radio">
+                                <label for="ht4f_btn_below">Below</label><br>
+                            </div>
+                        </div>
+                        <div id="vol-control" class="hidden">
+                            <div class="slider-cont">
+                                <div class="slider">
+                                    <input type="range" min="0" max="100" value="50" class="volume">
+                                    <progress max="100" value="50" class="volume"></progress>
+                                </div>
+                                <div class="sliderValue">50</div>
+                            </div>
+                        </div>
+                    </div>
+                    <section id="debug" class="ht4f_section hidden">
+						<h2 class="hidden"></h2>
+						<p id="playState"></p>
+                      <p id="players"></p>
+                    </section>
+
+                </div>
+            </section>
+            <section id="ht4f_content_text" class="ht4f_content ht4f_section ht4f_view_select ht4f_float">
+                <h2 class="ht4f_text">Content text goes here</h2>
+                <p class="ht4f_text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima in sint sunt a, voluptatem beatae eligendi alias cupiditate id ab laborum repellendus, et ipsam, odio hic sequi magni deleniti cum.  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas velit minima voluptate non commodi voluptatibus optio quaerat consequatur unde laboriosam enim deleniti maxime ratione cupiditate praesentium incidunt ex, illo tenetur.</p>
+                <p class="ht4f_text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima in sint sunt a, voluptatem beatae eligendi alias cupiditate id ab laborum repellendus, et ipsam, odio hic sequi magni deleniti cum.  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas velit minima voluptate non commodi voluptatibus optio quaerat consequatur unde laboriosam enim deleniti maxime ratione cupiditate praesentium incidunt ex, illo tenetur.</p>
+                <p class="ht4f_text"> </p><!-- this is here for a reason. Do not remove-->
+            </section>
+            <!-- Remove or comment out this section to remove syntax hightlighted code ????? There is no code associated with it -->
+            <!-- <section id="ht4f_code_section" class="ht4f_section">
+                <textarea id="text">This is a place to put text for stuff like syntax highlighting. Lorem ipsum dolor sit, amet consectetur adipisicing elit. Minima in sint sunt a, voluptatem beatae eligendi alias cupiditate id ab laborum repellendus, et ipsam, odio hic sequi magni deleniti cum.  Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas velit minima voluptate non commodi voluptatibus optio quaerat consequatur unde laboriosam enim deleniti maxime ratione cupiditate praesentium incidunt ex, illo tenetur</textarea>
+            </section> -->
+        </div>
+ </body>
+
+</html>
