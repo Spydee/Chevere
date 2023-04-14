@@ -15,9 +15,17 @@ $(document).ready(function () {
     myPlayer = null;
     searchPath = null;
     myaniarray = [];
-	deviceSupportsVolume = true;
+	
 	jsondata = "";
 	gsapDefinitions = "";
+	
+	/* Audio API Global context */
+	const AudioContext = window.AudioContext || window.webkitAudioContext;
+	audioCtx = new AudioContext();
+	masterGainNode = audioCtx.createGain();
+	masterGainNode.connect(audioCtx.destination);
+	masterGainNode.gain.value = 0.4;
+		
 	SLIDE_DURATION_OFF = -1;	// duration = -1
 	SLIDE_DELAY_OFF = -1;		// DELAY=-1
 	
@@ -144,7 +152,6 @@ class player {
         this.autoTimer = null;
         this.myActiveSlide = null;
         this.myNextSlide = null;
-        this.masterVolume = 0.1;
     }
 
     /*********************************************************
@@ -160,51 +167,12 @@ class player {
         this.ULE.addEventListener('next', () => this.next());
         this.ULE.addEventListener('rewind', () => this.rewind());
         this.ULE.addEventListener('volumeChanged', function (e) {
-            myPlayer.setMasterVolume(e.detail.volume);
+            masterGainNode.gain.value = (e.detail.volume);
         });
         //    this.ULE.addEventListener('full',  () => console.log('full') );
         searchPath = [jsondata.assetPath, jsondata.altPath, "."];
 
-		deviceSupportsVolume = this.supportsVolume();
-		if (deviceSupportsVolume !== true) {
-			jsondata.assetPath = "";
-			alert("Your device does not support volume control");
-		}
-		else
-			myDebugger.write(-1, "Volume supported");
-			
         this.loadFirstSlide();
-    }
-
-	supportsVolume() {
-		//return false;
-//		var elem = document.getElementById('debug');
-		const testAudio = document.createElement("audio");
-		if (testAudio) {
-			testAudio.src = jsondata.assetPath + "/blank.mp3";
-		//	myDebugger.write(-1, testAudio.src);
-		}
-			
-		var currVol = testAudio.volume;
-		testAudio.volume = 0.5;
-		var testVol = testAudio.volume;
-		testAudio.volume = currVol;
-		if (testVol === 1.0)
-			return false;
-		else if (testVol === 0.5)
-			return true;
-		else
-			myDebugger.write(-1, "Error testing volume: is " + testVol + ". Should be 0.5" );
-	}
-	
-    setMasterVolume(volume) {
-        this.masterVolume = volume;
-        if (this.myActiveSlide != null) {
-            this.myActiveSlide.setMasterVolume(volume);
-            myDebugger.write(-1, "Master volume set to " + this.masterVolume);
-        }
-        else
-            myDebugger.write(-1, "No active slide defined");
     }
 
     // called from init() and rewind()
@@ -339,8 +307,6 @@ class player {
 	}
 	
     async play() {
-		this.testAudio();
-		this.myActiveSlide.setMasterVolume(this.masterVolume);
         if (this.state == "paused") {
             this.resume();
             return;
@@ -435,8 +401,8 @@ class player {
      */
 
     async autoNext() {
-		this.testAudio();
-		this.myActiveSlide.setMasterVolume(this.masterVolume);
+		//this.testAudio();
+		//this.myActiveSlide.setMasterVolume(this.masterVolume);
         // if timer is stopped, prevent glitch caused by late timeout
         if (this.timerStop)
             return;
@@ -470,7 +436,7 @@ class player {
         // TRANSITION TO NEXT SLIDE
         this.ULE.dispatchEvent(new Event('transition-start'));
         await Promise.all([this.transition_out(), this.transition_in()]);
-        console.log("Initial loadSlide volume is " + this.masterVolume);
+        //console.log("Initial loadSlide volume is " + this.masterVolume);
         //this.myActiveSlide.setMasterVolume(this.masterVolume);
 
         $('.next').each(function () {

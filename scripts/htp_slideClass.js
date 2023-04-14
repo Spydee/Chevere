@@ -1,4 +1,4 @@
-
+this.elem
 class ht4f_timer {
     constructor(callback, delay) {
         this.callback = callback;
@@ -46,10 +46,12 @@ class ht4f_mediaClass {
         this.actualStart = null;   // when the play actually started
         this.actualEnd = null;     // when the play actually ended
 		this.ajaxFileFind = null;
+		this.gainNode = null;
 
         for (const cl of myMedia_.classLst) {
             this.elem.classList.add(cl);
         }
+		myDebugger.write(1, "Building " + this.filename);
 
         if (myMedia_.style)
             this.elem.setAttribute("style", myMedia_.style);
@@ -66,8 +68,15 @@ class ht4f_mediaClass {
         if (myMedia_.offsetTime)
             this.elem.dataset.offsetTime = myMedia_.offsetTime;
 
-        if ((myMedia_.volume) && ((myMedia_.tag === "audio") || (myMedia_.tag === "video")))
-            this.elem.dataset.volume = myMedia_.volume;
+        if ( (myMedia_.tag === "audio") || (myMedia_.tag === "video") ) {
+			if (myMedia_.volume) {
+				this.elem.dataset.volume = myMedia_.volume;
+			}
+			else {
+				this.elem.dataset.volume = 0;
+			}
+			myDebugger.write(3, "setting volume for " + this.filename + " to " + this.elem.dataset.volume);
+		}
 
         if (myMedia_.innerHTML)
             this.elem.innerHTML = myMedia_.innerHTML;
@@ -86,14 +95,24 @@ class ht4f_mediaClass {
         return this.elem.src;
     }
     setSource(src) {
+		myDebugger.write(1, "Setting source " + src);
         this.elem.src = src;
+		if ((this.tag === "audio") || (this.tag === "video")) {
+			this.audioTrack = audioCtx.createMediaElementSource(this.elem);
+			this.gainNode = audioCtx.createGain();
+			this.gainNode.gain.value = this.elem.dataset.volume;
+			this.audioTrack.connect(this.gainNode);
+			this.gainNode.connect(masterGainNode);
+			//this.gainNode.connect(audioCtx.destination);
+			console.log();console.log();
+		}
+//		else
+//			myDebugger.write(1, "Non-audio elemement: src= " + this.elem.src) + " : tag = " + this.tag;
     }
 
     play() {
         if (this.tag === "video" || this.tag === "audio") {
 			
-			if  ( (deviceSupportsVolume == false) && (this.tag == "audio") && this.elem.classList.contains("background") )
-				return;
 			if (this.elem) {
 				this.elem.play();
                 this.actualStart = performance.now();
@@ -208,7 +227,7 @@ class ht4f_slide {
         this.bgEnds = false;
         this.timers = [];
         this.loadCount = 0;
-        this.masterVolume = 0.1;
+        //this.masterVolume = 0.1;
 
 	// some devices (iPHone iPad, etc) do not support volume control.
 	// In this case do not load background music
@@ -220,10 +239,10 @@ class ht4f_slide {
 				if (c === "ht4f_audio")
 					isAudio = true;
 				if (c === "background")
-					isBackground = true;
+					isBackground = false;
 			}
 			
-			if ( deviceSupportsVolume || !isAudio || !isBackground) {
+			if ( !isAudio || !isBackground) {
 				if (m.delay === SLIDE_DELAY_OFF) {  // is continuing audio?
 					// if it is created from PREV/NEXT, then we want to add it to media
 					// and also set it to start at the offsetTime
@@ -249,6 +268,7 @@ class ht4f_slide {
 							loadNewBkg = true;
 					}
 					if (loadNewBkg === true) {
+						myDebugger.write(3, "creating " + m.text);
 						let mNew = new ht4f_mediaClass(m);
 						mNew.elem.currentTime = m.offsetTime;
 						mNew.delay = 0;
@@ -259,7 +279,10 @@ class ht4f_slide {
 						this.bgEnds = true;
 				}
 				else { // add all non-background audio to media
-					myDebugger.write(1,"Pushing " + m.text);
+					if (m.text)
+						myDebugger.write(1,"Pushing " + m.text);
+					else
+						myDebugger.write(1,"Pushing " + m.tag);
 					this.mediaArray.push(new ht4f_mediaClass(m));
 				}
 			}
@@ -283,49 +306,6 @@ class ht4f_slide {
         myNext.preload(this.pathList, this.mediaLoaded.bind(this));
     }
 
-    setMasterVolume(volume) {
-        this.masterVolume = volume;
-        this.setVolume();
-    }
-	
-    setVolume() {
-        let masterV = this.masterVolume;
-		let level = masterV;
-        myDebugger.write(1,"Master volume is " + this.masterVolume);
-        let audioMedia = $('.ht4f_audio');
-        myDebugger.write(1,"there are " + audioMedia.length + " audio flies loaded");
-        audioMedia.each(function (index, value) {
-			let level = masterV * value.dataset["volume"];
-			if (value.dataset["volume"] === undefined)
-			{
-				console.log("Warning undefined volume for slide");
-			}
-			else
-			{
-				level = masterV * value.dataset["volume"];
-			}
-            myDebugger.write(1,"volume for audio" + index + " should be : " + level);
-            value.volume = level;
-			myDebugger.write(1,'Actual volume is ' + value.volume);
-        });
-
-        let videoMedia = $('.ht4f_video');
-        myDebugger.write(1,"there are " + videoMedia.length + " video flies loaded");
-        videoMedia.each(function (index, value) {
-			if (value.dataset["volume"] === undefined)
-			{
-				console.log("Warning undefined volume for slide");
-			}
-			else
-			{
-				level = masterV * value.dataset["volume"];
-			}
-            console.log("volume for " + index + " : " + level);
-            value.volume = level;
-			
-        });
-    }
-
 
     /**
      * Callback function when media is loaded. Check against count
@@ -338,7 +318,7 @@ class ht4f_slide {
 
 		if (elem.classList.contains("ht4f_audio"))
 		{
-			elem.volume = this.masterVolume*elem.dataset["volume"];
+			//elem.volume = this.masterVolume*elem.dataset["volume"];
 		}
 
         if (this.loadCount == this.mediaArray.length) {
@@ -403,8 +383,9 @@ class ht4f_slide {
             if (justPlay) {
                 mediaWrap.play();
             }
-            
         }
+		if (audioCtx.state === "suspended")
+			audioCtx.resume();
 
         this.updateText();
 

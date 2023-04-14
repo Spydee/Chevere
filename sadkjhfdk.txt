@@ -1,0 +1,74 @@
+Readme.md
+
+Path to create slide
+
+
+ht_player calls 
+        this.myActiveSlide = new ht4f_slide(slideno, jsondata.slides[slideno - 1], true);
+		ht_slideClass assigns slideData to the jsondata[slideno]
+		
+		A foreach is done on slideData.media	(the media is from the json file - has tag, classLst, transition, volume if applicable, etc.)
+		   look to see whether or not the last slide audio ended etc. Do I load new?, retain old?
+		   The jsonMedia is sent to a wrapper class
+					if (loadNewBkg === true) {
+						let mNew = new ht4f_mediaClass(m);
+						mNew.elem.currentTime = m.offsetTime;
+						mNew.delay = 0;
+						myDebugger.write(1, "Pushing new " + mNew.text);
+						this.mediaArray.push(mNew);
+					}
+					if (m.duration !== SLIDE_DURATION_OFF)
+						this.bgEnds = true;
+		
+		Later when the media search  (CheckFileExists) happens and media is found, 
+		setsource(file) is called. Change this
+
+
+ht_player: autoNext
+		set MasterVolume
+		stop autoTimer (this won't be needed with gsap)
+		return if last slide
+		if bg defined use it, if not defined, done
+		
+		
+		
+actions needed
+const audioCtx = new AudioContext || webkit
+const myaudio = document.querySelector("audio")		i.e. it is the DOM element
+
+// Create a MediaElementAudioSourceNode
+// Feed the HTMLMediaElement into it - now we deal with the SourceNode wrapper
+const source = audioCtx.createMediaElementSource(myAudio);
+
+// Connect the AudioBufferSourceNode to the gainNode
+// and the gainNode to the destination, so we can play the
+// music and adjust the volume using the mouse cursor
+source.connect(gainNode);
+gainNode.connect(audioCtx.destination);
+
+
+
+
+Notes for future
+   Prev and Next preload the slide data for the given slide
+		when slide is being loaded, the complete slide timeline is created.
+		then, all I have to do is wait for the timeline to finish
+			when slide timeline finishes, the transition occurs. A negative delay should cause the transition to start before the slide is gone.
+			when the transition is done, all "current" are removed and "next" are preloaded.
+   GSAP must be made aware of the exact slide time
+   Background image and audio
+		need class of keep, preload, background
+		tran-out : $('.keep.background')  means don't stop it or start it
+		tran-out : $('.keep') not allowed because animation / audio needs to unload except for background
+		tran-out : $('.fade-out.background') means decrease volume to 0 during transition
+		tran-in  : $('fade-in'
+
+
+
+
+
+
+
+
+
+
