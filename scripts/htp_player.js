@@ -10,7 +10,8 @@ $(document).ready(function () {
     media_section = "#ht4f_graphics";
     content_section = "#ht4f_content_text";
     myDebugger = new debugWriter();
-    debugMode = 4;
+    debugMask = 0;
+	defaultDebugMode = 3;
     myDebugger.write(-1, "Debug initialized");
     myPlayer = null;
     searchPath = null;
@@ -116,7 +117,8 @@ class debugWriter{
 		if (debugWriteEnable === false)
         return;
             if (mode === -1)
-			mode = debugMode; // global
+			mode = defaultDebugMode; // global
+		mode &= debugMask;
 		switch (mode) {
 			case 1: console.log(message);
 				break;
@@ -225,7 +227,6 @@ class player {
     }
 
     transition_out() {
-
         return new Promise(function (resolve, reject) {
             $('.current').each(function () {
                 if ($(this).data('duration') !== SLIDE_DURATION_OFF)
@@ -252,6 +253,7 @@ class player {
                     $(this).css($(this).data('trancss')).animate($(this).data('tranin'), "slow");
             });
             $('.next').promise().done(function () {
+                //this.myActiveSlide.updateData();
                 resolve();
             });
         });
@@ -270,7 +272,7 @@ class player {
                 duration = 5000;
             }
         }
-        myDebugger.write(0,'Duration: ' + duration);
+        myDebugger.write(1,'Duration: ' + duration);
         this.autoTimer = new ht4f_timer(() => this.autoNext(), duration);
 
         if (this.checkAutoPlay()) {
@@ -351,6 +353,7 @@ class player {
         if (this.autoTimer != null)
             this.autoTimer.resume();
         this.myActiveSlide.resumeAll();
+
         for (const m of myaniarray) {
             m.resume();
         }
@@ -434,10 +437,10 @@ class player {
         this.updatePlayState("auto");
 
         // TRANSITION TO NEXT SLIDE
+        this.myActiveSlide.updateBackground();
         this.ULE.dispatchEvent(new Event('transition-start'));
         await Promise.all([this.transition_out(), this.transition_in()]);
         //console.log("Initial loadSlide volume is " + this.masterVolume);
-        //this.myActiveSlide.setMasterVolume(this.masterVolume);
 
         $('.next').each(function () {
             $(this).addClass('current');

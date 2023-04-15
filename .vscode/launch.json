@@ -5,10 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost/theCode/chevere",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
-            "file": "localhost/cheverelcds/index.html"
+            "file": "localhost/theCode/chevere/index.html"
         }
     ]
 }

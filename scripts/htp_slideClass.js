@@ -65,17 +65,26 @@ class ht4f_mediaClass {
             this.duration = myMedia_.duration;
             this.elem.dataset.duration = myMedia_.duration;
         }
+        if (this.delay < 0) {
+            this.elem.classList.add("nopreload");
+        }
+
+        if (this.duration < 0) {
+            this.elem.classList.add("keep");
+            //myDebugger.write(3, "Keeping " + myMedia_.text);
+        }
+
         if (myMedia_.offsetTime)
             this.elem.dataset.offsetTime = myMedia_.offsetTime;
 
         if ( (myMedia_.tag === "audio") || (myMedia_.tag === "video") ) {
-			if (myMedia_.volume) {
+            if (myMedia_.volume) {
 				this.elem.dataset.volume = myMedia_.volume;
 			}
 			else {
 				this.elem.dataset.volume = 0;
 			}
-			myDebugger.write(3, "setting volume for " + this.filename + " to " + this.elem.dataset.volume);
+			myDebugger.write(1, "setting volume for " + this.filename + " to " + this.elem.dataset.volume);
 		}
 
         if (myMedia_.innerHTML)
@@ -86,6 +95,9 @@ class ht4f_mediaClass {
             $(this.elem).data('tranin', myMedia_.transition.tranIn);
             $(this.elem).data('tranout', myMedia_.transition.tranOut);
         }
+
+        myDebugger.write(1, "Elem: " + this.filename + " classList is");
+        myDebugger.write(1, "     " + this.elem.classList);
     }
 
     getTag() {
@@ -103,19 +115,23 @@ class ht4f_mediaClass {
 			this.gainNode.gain.value = this.elem.dataset.volume;
 			this.audioTrack.connect(this.gainNode);
 			this.gainNode.connect(masterGainNode);
+            $(this.elem).data('track', this.audioTrack);
+            $(this.elem).data('gainNode', this.gainNode);
 			//this.gainNode.connect(audioCtx.destination);
-			console.log();console.log();
 		}
 //		else
 //			myDebugger.write(1, "Non-audio elemement: src= " + this.elem.src) + " : tag = " + this.tag;
     }
 
     play() {
+		myDebugger.write(1, "playing " + this.filename);
         if (this.tag === "video" || this.tag === "audio") {
 			
 			if (this.elem) {
 				this.elem.play();
                 this.actualStart = performance.now();
+				this.gainNode.gain.value = this.elem.dataset.volume;
+				myDebugger.write(1,"Setting volume to " + this.elem.dataset.volume);
             }
 			else
 				console.log("Warning:  Bad media");
@@ -157,6 +173,7 @@ class ht4f_mediaClass {
                 myDebugger.write(1," duration was: " + (this.actualEnd - this.actualStart));
    
                 me.elem.currentTime = me.offsetTime/1000;
+				this.gainNode.disconnect(); // not tested
             }, 10);
         }
     }
@@ -177,7 +194,7 @@ class ht4f_mediaClass {
                 type: 'HEAD',
                 url: file,
                 success: function () {
-                    console.log("Found: " + file);
+                    myDebugger.write(1, "Found: " + file);
                  //   xhr.abort();
                     successCallback(file);
                 },
@@ -259,7 +276,7 @@ class ht4f_slide {
 									value.dataset.offsetTime = m.offsetTime;
 									value.dataset.duration = m.duration;
 									value.dataset.delay = m.delay;
-									value.dataset.volume = m.volume;
+									value.dataset.volume = m.volume;    // later, we set the gainNode volume to dataset.volume
 									loadNewBkg = false;
 								}
 							});
@@ -332,10 +349,13 @@ class ht4f_slide {
         for (const mediaWrap of this.mediaArray) {
             var justPlay = true;
             if ((mediaWrap.tag === "video") || (mediaWrap.tag === "audio")) {
+				myDebugger.write(3, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
+				mediaWrap.gainNode.gain.value = mediaWrap.elem.dataset.volume;
 				if (useOffsetTime) {
 					if (mediaWrap.elem.dataset.offsetTime)
 						mediaWrap.elem.currentTime = mediaWrap.elem.dataset.offsetTime/1000;
 				}
+				
 				mediaWrap.playStart = performance.now();
 				// check for undefined timing (this is not a bug. Some objects don't have timing)
 				let _delay = -1;
@@ -383,6 +403,7 @@ class ht4f_slide {
             if (justPlay) {
                 mediaWrap.play();
             }
+			
         }
 		if (audioCtx.state === "suspended")
 			audioCtx.resume();
@@ -395,6 +416,18 @@ class ht4f_slide {
         //     var t = med.elem.tagName + ": " + med.elem.src;
         //     showPlaying.innerHTML += (t + "\n");
         // }
+    }
+
+    // used to update volume etc for media that crosses to the next slide
+
+    updateBackground() {
+        var prevBg = $('.current.background.ht4f_audio');
+        if (prevBg) {
+            prevBg.each(function (index, value) {
+                if (value.gainNode)
+                    value.gainNode.gain.value = value.dataset.volume;
+            });
+        }
     }
 
     pauseAll() {
