@@ -332,6 +332,10 @@ class ht4f_slide {
      */
     mediaLoaded(elem, file) {
         this.loadCount++;
+		var old = debugMask;
+		debugMask = 3;
+		myDebugger.write(1, "Loaded " + this.loadCount);
+		debugMask = old;
 
 		if (elem.classList.contains("ht4f_audio"))
 		{
