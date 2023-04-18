@@ -1,4 +1,3 @@
-this.elem
 class ht4f_timer {
     constructor(callback, delay) {
         this.callback = callback;
@@ -29,29 +28,50 @@ class ht4f_timer {
 
 class ht4f_mediaClass {
 
-    constructor(myMedia_) {
+    // the constructor takes two parameters
+    //      myMedia_ is the JSON definition data for the media
+    //      oldElem is an existing DOM element whose source is already defined and probably playing
+    // if oldElem is null, a new DOM element is created
+    // 
+    // defineMedia takes the JSON data and adds or changes the dataset data
+    // this scheme allows the DOM element to be self dependent
+    constructor(myMedia_, oldElem) {
 
         this.tag = myMedia_.tag;
         this.filename = myMedia_.text;
-        this.elem = document.createElement(myMedia_.tag);
+        if (oldElem) {
+            this.elem = oldElem;
+            this.gainNode = $(this.elem).data("gainNode");
+            if (!this.gainNode)
+                alert("Can't set gainNode for " + this.filename);
+        }
+        else {
+            this.elem = document.createElement(myMedia_.tag);
+            this.gainNode = null;
+        }
         //this.elem.src = myMedia_.text;
         if (myMedia_.transition)
             this.transition = myMedia_.transition;
-        this.delay = null;
+        this.delay = myMedia_.delay;
         this.delaytimer = null;
-        this.duration = null;
+        this.duration = myMedia_.duration;
         this.durationtimer = null;
         this.status = '';
         this.playStart = null;     // when the play button is pressed
         this.actualStart = null;   // when the play actually started
         this.actualEnd = null;     // when the play actually ended
 		this.ajaxFileFind = null;
-		this.gainNode = null;
+        this.defineMedia(myMedia_);
+    }
 
+    defineMedia(myMedia_) {
+        var classList = "";
         for (const cl of myMedia_.classLst) {
-            this.elem.classList.add(cl);
+            classList += cl + " ";
+            // this.elem.classList.add(cl);
         }
-		myDebugger.write(1, "Building " + this.filename);
+
+		//myDebugger.write(1, "Building " + this.filename);
 
         if (myMedia_.style)
             this.elem.setAttribute("style", myMedia_.style);
@@ -65,6 +85,8 @@ class ht4f_mediaClass {
             this.duration = myMedia_.duration;
             this.elem.dataset.duration = myMedia_.duration;
         }
+
+        this.elem.classList = classList;
         if (this.delay < 0) {
             this.elem.classList.add("nopreload");
         }
@@ -95,9 +117,6 @@ class ht4f_mediaClass {
             $(this.elem).data('tranin', myMedia_.transition.tranIn);
             $(this.elem).data('tranout', myMedia_.transition.tranOut);
         }
-
-        myDebugger.write(1, "Elem: " + this.filename + " classList is");
-        myDebugger.write(1, "     " + this.elem.classList);
     }
 
     getTag() {
@@ -107,7 +126,10 @@ class ht4f_mediaClass {
         return this.elem.src;
     }
     setSource(src) {
+        debugMask = 7;
 		myDebugger.write(1, "Setting source " + src);
+        if (this.elem.src)
+            return; // can't redefine
         this.elem.src = src;
 		if ((this.tag === "audio") || (this.tag === "video")) {
 			this.audioTrack = audioCtx.createMediaElementSource(this.elem);
@@ -128,9 +150,11 @@ class ht4f_mediaClass {
         if (this.tag === "video" || this.tag === "audio") {
 			
 			if (this.elem) {
-				this.elem.play();
+                var gNode = $(this.elem).data("gainNode");
+				gNode.gain.value = this.elem.dataset.volume;
+                $(this.elem).data("gainNode", gNode);
+                this.elem.play();
                 this.actualStart = performance.now();
-				this.gainNode.gain.value = this.elem.dataset.volume;
 				myDebugger.write(1,"Setting volume to " + this.elem.dataset.volume);
             }
 			else
@@ -156,7 +180,7 @@ class ht4f_mediaClass {
         myDebugger.write(1,"Media " + this.filename + " was scheduled at " + this.playStart);
         myDebugger.write(1," delay was: " + (this.actualStart - this.playStart));
         myDebugger.write(1," duration was: " + (this.actualEnd - this.actualStart));
-           }
+    }
 
     /**
      * The timer is short but never gets cleared
@@ -231,6 +255,11 @@ class ht4f_mediaClass {
         //this.ajaxFileFind.abort();
         this.callback(this.elem, file);
     }
+
+    copyDataset(from) {
+        this.elem
+
+    }
 }
 
 /**
@@ -244,13 +273,13 @@ class ht4f_slide {
         this.bgEnds = false;
         this.timers = [];
         this.loadCount = 0;
-        //this.masterVolume = 0.1;
 
-	// some devices (iPHone iPad, etc) do not support volume control.
-	// In this case do not load background music
         for (const m of slideData.media) {
 			var isAudio = false;
 			var isBackground = false;
+            var isKeeper = false;
+            var noPreload = false;
+            
 			for (const c of m.classLst)
 			{
 				if (c === "ht4f_audio")
@@ -258,59 +287,57 @@ class ht4f_slide {
 				if (c === "background")
 					isBackground = false;
 			}
-			
-			if ( !isAudio || !isBackground) {
-				if (m.delay === SLIDE_DELAY_OFF) {  // is continuing audio?
-					// if it is created from PREV/NEXT, then we want to add it to media
-					// and also set it to start at the offsetTime
-					var loadNewBkg = false;
-					if (isPrevNext) {
-						loadNewBkg = true;
-					}
-					else {
-						var prevBg = $('.current.background.ht4f_audio');
-						//var filename = fullPath.replace(/^.*[\\\/]/, '')
-						if (prevBg) {
-							prevBg.each(function (index, value) {
-								if (value.src.includes(m.text)){
-									value.dataset.offsetTime = m.offsetTime;
-									value.dataset.duration = m.duration;
-									value.dataset.delay = m.delay;
-									value.dataset.volume = m.volume;    // later, we set the gainNode volume to dataset.volume
-									loadNewBkg = false;
-								}
-							});
-						}
-						else
-							loadNewBkg = true;
-					}
-					if (loadNewBkg === true) {
-						myDebugger.write(3, "creating " + m.text);
-						let mNew = new ht4f_mediaClass(m);
-						mNew.elem.currentTime = m.offsetTime;
-						mNew.delay = 0;
-						myDebugger.write(1, "Pushing new " + mNew.text);
-						this.mediaArray.push(mNew);
-					}
-					if (m.duration !== SLIDE_DURATION_OFF)
-						this.bgEnds = true;
-				}
-				else { // add all non-background audio to media
-					if (m.text)
-						myDebugger.write(1,"Pushing " + m.text);
-					else
-						myDebugger.write(1,"Pushing " + m.tag);
-					this.mediaArray.push(new ht4f_mediaClass(m));
-				}
-			}
+
+            if (m.delay === SLIDE_DELAY_OFF)
+                noPreload = !isPrevNext;
+            if (m.duration === SLIDE_DURATION_OFF)
+                isKeeper = true;
+
+            debugMask = 3;
+            myDebugger.write(1, "Media " + m.tag + " is " + m.text);
+            if (isAudio)
+            myDebugger.write(1, "Is Audio");
+            if (isBackground)
+            myDebugger.write(1, "Is Background");
+            if (isKeeper)
+            myDebugger.write(1, "Is keeper");
+            if (noPreload)
+            myDebugger.write(1, "no preload");
+
+            if (noPreload) {
+                // find the DOM element of last slide
+                var prevBg = $('.keep.background.ht4f_audio');
+                var localPusher = this.mediaArray;
+                prevBg.each(function (index, value) {
+                    if (value.src) {
+                        const keepFile = value.src.replace(/^.*[\\\/]/, '');
+                        myDebugger.write(1, "Comparing " + keepFile + " to " + m.text);
+                        myDebugger.write(1, "gainNode is " + $(value).data("gainNode"));
+                        if (m.text === keepFile) {
+                            localPusher.push(new ht4f_mediaClass(m, value));
+                        }
+                        myDebugger.write(1, "keeping " + keepFile);
+                    }
+                });
+            }
+            else {
+                if (m.text)
+                    myDebugger.write(1,"Pushing " + m.text);
+                else
+                    myDebugger.write(1,"Pushing " + m.tag);
+            this.mediaArray.push(new ht4f_mediaClass(m, null));
+            }
+            debugMask = 0;
         }
         this.pathList = searchPath; // searchPath is global
     }
 
     preLoad(classToAdd) {
         for (const m of this.mediaArray) {
-            m.elem.classList.add(classToAdd);
-            this.preloadMedia(m);
+            if ( !(m.elem.classList.contains("nopreload")) || (classToAdd === "current") ) {
+                m.elem.classList.add(classToAdd);
+               this.preloadMedia(m);
+            }
         }
     }
 
@@ -353,8 +380,10 @@ class ht4f_slide {
         for (const mediaWrap of this.mediaArray) {
             var justPlay = true;
             if ((mediaWrap.tag === "video") || (mediaWrap.tag === "audio")) {
-				myDebugger.write(3, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
-				mediaWrap.gainNode.gain.value = mediaWrap.elem.dataset.volume;
+				myDebugger.write(1, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
+                var gNode = $(mediaWrap.elem).data("gainNode");
+                gNode.gain.value = mediaWrap.elem.dataset.volume;
+				$(mediaWrap).data("gainNode", gNode);
 				if (useOffsetTime) {
 					if (mediaWrap.elem.dataset.offsetTime)
 						mediaWrap.elem.currentTime = mediaWrap.elem.dataset.offsetTime/1000;
@@ -425,13 +454,25 @@ class ht4f_slide {
     // used to update volume etc for media that crosses to the next slide
 
     updateBackground() {
-        var prevBg = $('.current.background.ht4f_audio');
+        var prevBg = $('.keep.current.background.ht4f_audio');
         if (prevBg) {
             prevBg.each(function (index, value) {
-                if (value.gainNode)
-                    value.gainNode.gain.value = value.dataset.volume;
+                debug.Mask = 7;
+                var gainNode = $(value).data("gainNode");
+                myDebugger.write(1, 'Changing volume of ' + value.src);
+                myDebugger.write(1, ' from  ' + gainNode.gain.value + " to " + value.dataset.volume);
+                if (gainNode)
+                    gainNode.gain.value = value.dataset.volume;
             });
         }
+
+
+//        $('.keep.ht4f_audio').each(function() {
+//            myDebugger.write(1, 'Changing volume from ' + $(this).data('gainNode').gain.value + " to " + $(this).data('volume'))
+//            $(this).data('gainNode').gain.value = $(this).data('volume');
+//            
+//        });
+
     }
 
     pauseAll() {

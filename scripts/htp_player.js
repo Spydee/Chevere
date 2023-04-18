@@ -32,15 +32,15 @@ $(document).ready(function () {
 	
 	
 	async function loadJson(slideJSON, animationJSON) {
-        myDebugger.write(1,"Fetching json data");
+     //   myDebugger.write(1,"Fetching json data");
 		var xhrA = $.get(animationJSON, function(data, status) {
 			gsapDefinitions = data;
-			myDebugger.write(1,"gsapDefinitions loaded");
+	//		myDebugger.write(1,"gsapDefinitions loaded");
 		}).fail(function(data) { alert("error loading gsapDefinitons " + xhrA.responseText)});
 
 		xhrJ = $.get(slideJSON, function(data, status, xhr) {
 			jsondata = data;
-			myDebugger.write(1,"now jsondata = " + jsondata.title);
+	//		myDebugger.write(1,"now jsondata = " + jsondata.title);
 		}, 'json').fail(function(data, status, xhr) { handleJsonLoadErrors(status, xhr); });
 	
 		try {
@@ -228,21 +228,21 @@ class player {
 
     transition_out() {
         return new Promise(function (resolve, reject) {
-            $('.current').each(function () {
-                if ($(this).data('duration') !== SLIDE_DURATION_OFF)
+            $('.current').not('.keep').each(function () {
                     if (this.tagName === "IMG" || this.tagName === "VIDEO" || this.tagName === "DIV")
                         $(this).animate($(this).data('tranout'), "slow");
+                    // add code to fade out the audio                          
             });
-            $('.current').promise().done(function () {
-                $('.current').each(function () {
-                    if ($(this).data('duration') !== SLIDE_DURATION_OFF) {
+
+            $('.current').not('.keep').promise().done(function () {
+                $('.current').not('.keep').each(function () {
 						console.log("Removing " + this.src);
                         $(this).remove();
-					}
+					});
                 });
                 resolve();
             });
-        });
+            
     }
 
     transition_in() {
@@ -252,6 +252,7 @@ class player {
                 if ((this.tagName === "IMG" || this.tagName === "VIDEO") && $(this).data('tranin'))
                     $(this).css($(this).data('trancss')).animate($(this).data('tranin'), "slow");
             });
+
             $('.next').promise().done(function () {
                 //this.myActiveSlide.updateData();
                 resolve();
@@ -272,7 +273,7 @@ class player {
                 duration = 5000;
             }
         }
-        myDebugger.write(1,'Duration: ' + duration);
+        //myDebugger.write(1,'Duration: ' + duration);
         this.autoTimer = new ht4f_timer(() => this.autoNext(), duration);
 
         if (this.checkAutoPlay()) {
@@ -281,7 +282,7 @@ class player {
                 this.myNextSlide = new ht4f_slide(this.slidePlaying + 1, jsondata.slides[this.slidePlaying], false);
                 this.myNextSlide.preLoad('next');
 				//this.myNextSlide.setMasterVolume(this.masterVolume);
-                myDebugger.write(1,'Preloaded slide ' + (this.slidePlaying + 1));
+          //      myDebugger.write(1,'Preloaded slide ' + (this.slidePlaying + 1));
             }
         }
     }
@@ -302,8 +303,8 @@ class player {
 			$.each(myAudio.attr('class').split(' '), function(index, value) {
                 s += value;
             });
-			myDebugger.write(1,"Media is : " + value.src);
-			myDebugger.write(1,"ClassList is : " + s + ' ');
+	//		myDebugger.write(1,"Media is : " + value.src);
+	//		myDebugger.write(1,"ClassList is : " + s + ' ');
 		});
 
 	}
@@ -437,7 +438,9 @@ class player {
         this.updatePlayState("auto");
 
         // TRANSITION TO NEXT SLIDE
+        console.log("\n\r audio level");
         this.myActiveSlide.updateBackground();
+        console.log("\n\n\r\r audio level");
         this.ULE.dispatchEvent(new Event('transition-start'));
         await Promise.all([this.transition_out(), this.transition_in()]);
         //console.log("Initial loadSlide volume is " + this.masterVolume);
