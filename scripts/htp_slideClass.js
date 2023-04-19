@@ -149,16 +149,16 @@ class ht4f_mediaClass {
     }
 
     play() {
-		myDebugger.write(4, "playing " + this.filename);
+		myDebugger.write(-1, "Starting play: " + this.filename);
         if (this.tag === "video" || this.tag === "audio") {
 			
 			if (this.elem) {
                 var gNode = $(this.elem).data("gainNode");
 				gNode.gain.value = this.elem.dataset.volume;
                 $(this.elem).data("gainNode", gNode);
+				myDebugger.write(-1,"In lay: setting volume to " + this.elem.dataset.volume);
                 this.elem.play();
                 this.actualStart = performance.now();
-				myDebugger.write(-1,"Setting volume to " + this.elem.dataset.volume);
             }
 			else
 				console.log("Warning:  Bad media");
@@ -383,7 +383,7 @@ class ht4f_slide {
     }
 
     playNewMedia(useOffsetTime) {
-        console.log('playNewMedia: ' + this.slideNo);
+        myDebugger.write(-1, 'playNewMedia: ' + this.slideNo);
 
         for (const mediaWrap of this.mediaArray) {
             var justPlay = true;
