@@ -131,6 +131,9 @@ class ht4f_mediaClass {
         if (this.elem.src)
             return; // can't redefine
         this.elem.src = src;
+        this.elem.onloadeddata = function() {
+            myDebugger.write(-1, this.src + " is ready to play");
+        }
 		if ((this.tag === "audio") || (this.tag === "video")) {
 			this.audioTrack = audioCtx.createMediaElementSource(this.elem);
 			this.gainNode = audioCtx.createGain();
