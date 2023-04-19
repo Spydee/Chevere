@@ -33,12 +33,15 @@ div.ht4f_div {
 div.scroll {
     background-color: #fed9ff;
     width: 600px;
-    height: 150px;
+    height: 550px;
     overflow-x: hidden;
     overflow-y: auto;
     text-align: left;
-    padding-bottom: 0px;
-    margin-bottom: -20px;
+  }
+  div.scroll > p {
+    padding-bottom: 2px;
+    padding-top : 2px;
+    margin-bottom: -14px;
   }
 
 section.ht4f_section {

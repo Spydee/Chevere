@@ -176,10 +176,14 @@ class ht4f_mediaClass {
             }
 			else
 				console.log("Warning:  Bad media");
+            myDebugger.write(-1,"Pausing " + this.filename );
         }
-        myDebugger.write(-1,"Media " + this.filename + " was scheduled at " + this.playStart);
-        myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
-        myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
+        else {
+            myDebugger.write(-1,"Pausing " + this.tag );
+        }
+
+     //   myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
+     //   myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
     }
 
     /**
@@ -192,9 +196,9 @@ class ht4f_mediaClass {
     
             setTimeout(function () {
                 me.elem.pause();
-                myDebugger.write(-1,"Media " + this.filename + " was scheduled at " + this.playStart);
-                myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
-                myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
+                myDebugger.write(-1,"Stopping and disconnecting" + this.filename);
+       //         myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
+       //         myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
    
                 me.elem.currentTime = me.offsetTime/1000;
 				this.gainNode.disconnect(); // not tested
@@ -210,10 +214,10 @@ class ht4f_mediaClass {
      * @param {function} errorCallback : fucntion to call if the search failed
      */
     checkFileExists(files, successCallback, errorCallback) {
-        myDebugger.write(-1, "There are " + files.length + " locations to search");
+        //myDebugger.write(-1, "There are " + files.length + " locations to search");
         if (files.length > 0) {
             let file = files.shift();
-            myDebugger.write(-1, "Looking for " + file + " of " + files.length);
+            myDebugger.write(-1, "Looking for " + file);
             var xhr = $.ajax({
                 type: 'HEAD',
                 url: file,
@@ -273,6 +277,7 @@ class ht4f_slide {
         this.bgEnds = false;
         this.timers = [];
         this.loadCount = 0;
+        this.loadLast = 0;
 
         for (const m of slideData.media) {
 			var isAudio = false;
@@ -293,15 +298,18 @@ class ht4f_slide {
             if (m.duration === SLIDE_DURATION_OFF)
                 isKeeper = true;
 
-            myDebugger.write(-1, "Media " + m.tag + " is " + m.text);
+            var message = "Media " + m.tag;
+            if (m.text)
+                message += " is " + m.text;
             if (isAudio)
-            myDebugger.write(-1, "Is Audio");
+                message += ": Is Audio";
             if (isBackground)
-            myDebugger.write(-1, "Is Background");
+                message += " Is Background";
             if (isKeeper)
-            myDebugger.write(-1, "Is keeper");
+                message += " Is keeper";
             if (noPreload)
-            myDebugger.write(-1, "no preload");
+                message += "no preload";
+            myDebugger.write(-1, message);
 
             if (noPreload) {
                 // find the DOM element of last slide
@@ -335,6 +343,8 @@ class ht4f_slide {
             if ( !(m.elem.classList.contains("nopreload")) || (classToAdd === "current") ) {
                 m.elem.classList.add(classToAdd);
                this.preloadMedia(m);
+               if (m.filename)
+                   this.loadLast += 1;
             }
         }
     }
@@ -357,10 +367,7 @@ class ht4f_slide {
      */
     mediaLoaded(elem, file) {
         this.loadCount++;
-		var old = debugMask;
-		debugMask = 3;
-		myDebugger.write(-1, "Loaded " + this.loadCount);
-		debugMask = old;
+		myDebugger.write(-1, "Loaded " + this.loadCount + " of " + this.loadLast);
 
 		if (elem.classList.contains("ht4f_audio"))
 		{
@@ -368,7 +375,7 @@ class ht4f_slide {
 		}
 
         if (this.loadCount == this.mediaArray.length) {
-            //  myDebugger.write("Finished loading");
+            myDebugger.write(-1, "Finished loading");
         }
     }
 
@@ -378,7 +385,7 @@ class ht4f_slide {
         for (const mediaWrap of this.mediaArray) {
             var justPlay = true;
             if ((mediaWrap.tag === "video") || (mediaWrap.tag === "audio")) {
-				myDebugger.write(1, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
+				myDebugger.write(-1, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
                 var gNode = $(mediaWrap.elem).data("gainNode");
                 gNode.gain.value = mediaWrap.elem.dataset.volume;
 				$(mediaWrap).data("gainNode", gNode);
@@ -419,8 +426,8 @@ class ht4f_slide {
 									mediaWrap.durationtimer.clear();
                                     mediaWrap.durationtimer = null;
                                     mediaWrap.actualEnd = performance.now();
-                                    myDebugger.write(1,mediaWrap.filename + ": Started at " + (mediaWrap.actualStart-mediaWrap.playStart));
-                                    myDebugger.write(1,mediaWrap.filename + ": Duration is " + (mediaWrap.actualEnd-mediaWrap.actualStart));
+                                    myDebugger.write(-1,mediaWrap.filename + ": Started at " + (mediaWrap.actualStart-mediaWrap.playStart));
+                                    myDebugger.write(-1,mediaWrap.filename + ": Duration is " + (mediaWrap.actualEnd-mediaWrap.actualStart));
                                     mediaWrap.pause();
                                 }, _duration);
                                 mediaWrap.durationtimer = t2;
@@ -455,10 +462,9 @@ class ht4f_slide {
         var prevBg = $('.keep.current.background.ht4f_audio');
         if (prevBg) {
             prevBg.each(function (index, value) {
-                debug.Mask = 7;
                 var gainNode = $(value).data("gainNode");
-                myDebugger.write(1, 'Changing volume of ' + value.src);
-                myDebugger.write(1, ' from  ' + gainNode.gain.value + " to " + value.dataset.volume);
+                myDebugger.write(-1, 'Changing volume of ' + value.src);
+                myDebugger.write(-1, ' from  ' + gainNode.gain.value + " to " + value.dataset.volume);
                 if (gainNode)
                     gainNode.gain.value = value.dataset.volume;
             });
