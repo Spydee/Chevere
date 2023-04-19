@@ -126,8 +126,8 @@ class ht4f_mediaClass {
         return this.elem.src;
     }
     setSource(src) {
-        debugMask = 7;
-		myDebugger.write(1, "Setting source " + src);
+        
+		myDebugger.write(-1, "Setting source " + src);
         if (this.elem.src)
             return; // can't redefine
         this.elem.src = src;
@@ -146,7 +146,7 @@ class ht4f_mediaClass {
     }
 
     play() {
-		myDebugger.write(1, "playing " + this.filename);
+		myDebugger.write(4, "playing " + this.filename);
         if (this.tag === "video" || this.tag === "audio") {
 			
 			if (this.elem) {
@@ -155,7 +155,7 @@ class ht4f_mediaClass {
                 $(this.elem).data("gainNode", gNode);
                 this.elem.play();
                 this.actualStart = performance.now();
-				myDebugger.write(1,"Setting volume to " + this.elem.dataset.volume);
+				myDebugger.write(-1,"Setting volume to " + this.elem.dataset.volume);
             }
 			else
 				console.log("Warning:  Bad media");
@@ -177,9 +177,9 @@ class ht4f_mediaClass {
 			else
 				console.log("Warning:  Bad media");
         }
-        myDebugger.write(1,"Media " + this.filename + " was scheduled at " + this.playStart);
-        myDebugger.write(1," delay was: " + (this.actualStart - this.playStart));
-        myDebugger.write(1," duration was: " + (this.actualEnd - this.actualStart));
+        myDebugger.write(-1,"Media " + this.filename + " was scheduled at " + this.playStart);
+        myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
+        myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
     }
 
     /**
@@ -192,9 +192,9 @@ class ht4f_mediaClass {
     
             setTimeout(function () {
                 me.elem.pause();
-                myDebugger.write(1,"Media " + this.filename + " was scheduled at " + this.playStart);
-                myDebugger.write(1," delay was: " + (this.actualStart - this.playStart));
-                myDebugger.write(1," duration was: " + (this.actualEnd - this.actualStart));
+                myDebugger.write(-1,"Media " + this.filename + " was scheduled at " + this.playStart);
+                myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
+                myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
    
                 me.elem.currentTime = me.offsetTime/1000;
 				this.gainNode.disconnect(); // not tested
@@ -210,20 +210,20 @@ class ht4f_mediaClass {
      * @param {function} errorCallback : fucntion to call if the search failed
      */
     checkFileExists(files, successCallback, errorCallback) {
-        myDebugger.write(1, "There are " + files.length + " locations to search");
+        myDebugger.write(-1, "There are " + files.length + " locations to search");
         if (files.length > 0) {
             let file = files.shift();
-            myDebugger.write(1, "Looking for " + file + " of " + files.length);
+            myDebugger.write(-1, "Looking for " + file + " of " + files.length);
             var xhr = $.ajax({
                 type: 'HEAD',
                 url: file,
                 success: function () {
-                    myDebugger.write(1, "Found: " + file);
+                    myDebugger.write(-1, "Found: " + file);
                  //   xhr.abort();
                     successCallback(file);
                 },
                 error: function () {
-                    myDebugger.write(1,"Not found: " + file);
+                    myDebugger.write(-1,"Not found: " + file);
                     errorCallback(files, successCallback, errorCallback);
                 }
             });
@@ -293,16 +293,15 @@ class ht4f_slide {
             if (m.duration === SLIDE_DURATION_OFF)
                 isKeeper = true;
 
-            debugMask = 3;
-            myDebugger.write(1, "Media " + m.tag + " is " + m.text);
+            myDebugger.write(-1, "Media " + m.tag + " is " + m.text);
             if (isAudio)
-            myDebugger.write(1, "Is Audio");
+            myDebugger.write(-1, "Is Audio");
             if (isBackground)
-            myDebugger.write(1, "Is Background");
+            myDebugger.write(-1, "Is Background");
             if (isKeeper)
-            myDebugger.write(1, "Is keeper");
+            myDebugger.write(-1, "Is keeper");
             if (noPreload)
-            myDebugger.write(1, "no preload");
+            myDebugger.write(-1, "no preload");
 
             if (noPreload) {
                 // find the DOM element of last slide
@@ -327,7 +326,6 @@ class ht4f_slide {
                     myDebugger.write(1,"Pushing " + m.tag);
             this.mediaArray.push(new ht4f_mediaClass(m, null));
             }
-            debugMask = 0;
         }
         this.pathList = searchPath; // searchPath is global
     }
@@ -361,7 +359,7 @@ class ht4f_slide {
         this.loadCount++;
 		var old = debugMask;
 		debugMask = 3;
-		myDebugger.write(1, "Loaded " + this.loadCount);
+		myDebugger.write(-1, "Loaded " + this.loadCount);
 		debugMask = old;
 
 		if (elem.classList.contains("ht4f_audio"))

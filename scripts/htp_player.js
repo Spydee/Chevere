@@ -10,8 +10,8 @@ $(document).ready(function () {
     media_section = "#ht4f_graphics";
     content_section = "#ht4f_content_text";
     myDebugger = new debugWriter();
-    debugMask = 0;
-	defaultDebugMode = 3;
+    debugMask = 5;
+	defaultDebugMode = 4;
     myDebugger.write(-1, "Debug initialized");
     myPlayer = null;
     searchPath = null;
@@ -104,10 +104,10 @@ $(document).ready(function () {
 let debugWriteEnable = true;
 class debugWriter{
 
-		constructor() {
-		}
+	constructor() {
+	}
 		
-		write(mode, message) {
+	write(mode, message) {
 			// mode = -1 : use global debugLogMode
 			// mode = 0: no output
 			// mode = 1: use console,log
@@ -127,10 +127,22 @@ class debugWriter{
 			case 3: console.log(message);
 					alert(message);
 				break;
-			case 4: 
+			case 4: this.writeHTML(message);
+                break;
 			default: break;
 		}
 	}
+    writeHTML(message) {
+        const debugDiv = $('#debug');
+        if (debugDiv) {
+            var newP = document.createElement("p");
+            //debugSec.children('p')[0].innerHTML += message;
+            newP.innerHTML = message;
+            debugDiv[0].appendChild(newP);
+        }
+
+
+    }
 
 }
 
@@ -193,7 +205,7 @@ class player {
             this.myActiveSlide.updateText();
             this.slidePlaying = slideno;
             this.updatePlayState(playstate);
-            myDebugger.write(1, 'Loaded slide ' + slideno);
+            myDebugger.write(-1, 'Loaded slide ' + slideno);
         }.bind(this), 100);
     }
 
@@ -230,7 +242,7 @@ class player {
         return new Promise(function (resolve, reject) {
             $('.current').not('.keep').each(function () {
                     if (this.tagName === "IMG" || this.tagName === "VIDEO" || this.tagName === "DIV")
-                        $(this).animate($(this).data('tranout'), "slow");
+                        $(this).animate($(this).data('tranout'), 'slow');
                     // add code to fade out the audio                          
             });
 
@@ -250,7 +262,7 @@ class player {
             // console.log('begin in');
             $('.next').each(function () {
                 if ((this.tagName === "IMG" || this.tagName === "VIDEO") && $(this).data('tranin'))
-                    $(this).css($(this).data('trancss')).animate($(this).data('tranin'), "slow");
+                    $(this).css($(this).data('trancss')).animate($(this).data('tranin'), 'slow');
             });
 
             $('.next').promise().done(function () {
@@ -303,8 +315,8 @@ class player {
 			$.each(myAudio.attr('class').split(' '), function(index, value) {
                 s += value;
             });
-	//		myDebugger.write(1,"Media is : " + value.src);
-	//		myDebugger.write(1,"ClassList is : " + s + ' ');
+			myDebugger.write(-1,"Media is : " + value.src);
+			myDebugger.write(-1,"ClassList is : " + s + ' ');
 		});
 
 	}

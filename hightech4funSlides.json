@@ -556,7 +556,7 @@
 			"delay": -1,
 			"offsetTime": 32000,
 			"duration": -1,
-			"volume":0.2			
+			"volume":0.25			
 		  }
 		],
 		"content": [
@@ -640,15 +640,18 @@
             "useDefaultTrans": false,
             "tranCss": {
               "opacity": 0,
-              "left": "-100%"
+			  "width": "5%",
+			  "left" : "+=50%",
+			  "top" : "+=50%"
             },
             "tranIn": {
               "opacity": 1,
-              "left": "0%"
+			  "width":"100%",
+			  "left" : "-=50%",
+			  "top" : "-=50%"
             },
             "tranOut": {
-              "opacity": 0,
-              "left": "100%"
+              "opacity": 0
             }
           }
         }
