@@ -248,7 +248,7 @@ class player {
 
             $('.current').not('.keep').promise().done(function () {
                 $('.current').not('.keep').each(function () {
-						console.log("Removing " + this.src);
+						myDebugger.write(-1, "Removing " + this.src);
                         $(this).remove();
 					});
                 });

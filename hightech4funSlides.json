@@ -114,7 +114,7 @@
 			],
 			"text": "Greensleeves_96.mp3",
 			"delay": 7200,
-			"offsetTime": 0,
+			"offsetTime": 700,
 			"duration": -1,
 			"volume":0.4
 		  },
@@ -124,7 +124,7 @@
 			  "ht4f_audio"
 			],
 			"text": "Kayla_Slide1_96.mp3",
-			"delay": 0,
+			"delay": 7200,
 			"offsetTime": 0,
 			"duration": 18500,
 			"volume":0.9
@@ -303,7 +303,7 @@
 			  "ht4f_audio"
 			],
 			"text": "Andrew_Slide3_96.mp3",
-			"delay": 0,
+			"delay": 5,
 			"offsetTime": 0,
 			"duration": 26500,
 			"volume":0.9
@@ -402,7 +402,7 @@
 			  "background"
 			],
 			"text": "CaptainJack_96.mp3",
-			"delay": 0,
+			"delay": 5,
 			"offsetTime": 0,
 			"duration": -1,
 			"volume":0.5			
@@ -413,7 +413,7 @@
 			  "ht4f_audio"
 			],
 			"text": "Andrew_Slide4_96.mp3",
-			"delay": 0,
+			"delay": 5,
 			"offsetTime": 0,
 			"duration": 27000,
 			"volume":0.9			
@@ -496,7 +496,7 @@
 			  "ht4f_audio"
 			],
 			"text": "Andrew_Slide5_96.mp3",
-			"delay": 0,
+			"delay": 5,
 			"offsetTime": 0,
 			"duration": 5000,
 			"volume":0.9			
@@ -609,7 +609,7 @@
 			  "windRain"
 			],
 			"text": "Andrew_Slide7_96.mp3",
-			"delay": 0,
+			"delay": 5,
 			"duration": 3500,
 			"volume":0.9
 		  }

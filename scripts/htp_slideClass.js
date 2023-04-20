@@ -156,7 +156,7 @@ class ht4f_mediaClass {
                 var gNode = $(this.elem).data("gainNode");
 				gNode.gain.value = this.elem.dataset.volume;
                 $(this.elem).data("gainNode", gNode);
-				myDebugger.write(-1,"In lay: setting volume to " + this.elem.dataset.volume);
+				myDebugger.write(-1,"In play: setting volume to " + this.elem.dataset.volume);
                 this.elem.play();
                 this.actualStart = performance.now();
             }
@@ -203,8 +203,13 @@ class ht4f_mediaClass {
        //         myDebugger.write(-1," delay was: " + (this.actualStart - this.playStart));
        //         myDebugger.write(-1," duration was: " + (this.actualEnd - this.actualStart));
    
-                me.elem.currentTime = me.offsetTime/1000;
-				this.gainNode.disconnect(); // not tested
+                try{
+                    me.elem.currentTime = me.offsetTime/1000;
+                    this.gainNode.disconnect(); // not tested
+                }
+                catch (e) {
+                    myDebugger.write(2, 'Failed to set currentTime');
+                }
             }, 10);
         }
     }
@@ -382,73 +387,68 @@ class ht4f_slide {
         }
     }
 
+
+
+    /********************************************************
+     * This routine does the following
+     * 1. checks to see if the media needs to play or not
+     *      if class has "nopreload" it does not need to play. It is already playing
+     * 2. if it does not need to play, does it need to be updated with 
+     *    new parameters?
+     * 
+     */
+
     playNewMedia(useOffsetTime) {
         myDebugger.write(-1, 'playNewMedia: ' + this.slideNo);
 
         for (const mediaWrap of this.mediaArray) {
-            var justPlay = true;
+     			
+    		mediaWrap.playStart = performance.now();
             if ((mediaWrap.tag === "video") || (mediaWrap.tag === "audio")) {
-				myDebugger.write(-1, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
-                var gNode = $(mediaWrap.elem).data("gainNode");
-                gNode.gain.value = mediaWrap.elem.dataset.volume;
-				$(mediaWrap).data("gainNode", gNode);
-				if (useOffsetTime) {
-					if (mediaWrap.elem.dataset.offsetTime)
-						mediaWrap.elem.currentTime = mediaWrap.elem.dataset.offsetTime/1000;
-				}
-				
-				mediaWrap.playStart = performance.now();
+                myDebugger.write(-1, "playNewMedia: Setting volume of " + mediaWrap.filename + " to " + mediaWrap.elem.dataset.volume);
+    
 				// check for undefined timing (this is not a bug. Some objects don't have timing)
-				let _delay = -1;
-				if (mediaWrap.delay)
-					_delay = mediaWrap.delay;
+                if (useOffsetTime) {
+                    if ((mediaWrap.elem) && (mediaWrap.elem.dataset.offsetTime))
+                        mediaWrap.elem.currentTime = mediaWrap.elem.dataset.offsetTime/1000;
+                }
+            let _delay = 0;
+			if ((mediaWrap.delay) && (mediaWrap.delay > 0))
+				_delay = mediaWrap.delay;
 				
-				let _duration = 0;
-				if ( (mediaWrap.duration) && (mediaWrap.duration > 0))
-					_duration = mediaWrap.duration;
+			let _duration = 0;
+			if ( (mediaWrap.duration) && (mediaWrap.duration > 0))
+				_duration = mediaWrap.duration;
 
-				if ( (_delay === -1) && (_duration > 0) )
-					_delay = 2;
-				if ( (_delay > 0) && (_duration > 0) ) {
-					justPlay = false;
-				}
-                myDebugger.write(1, mediaWrap.source);
-				myDebugger.write(1, "Delay = " + _delay);
-				myDebugger.write(1, "Duration = " + _duration);
-				//if (!mediaWrap.elem.classList.contains("animation"))
-				//	justPlay = false;
-                if (justPlay === false) {
-                            var t = new ht4f_timer(function () {
-							mediaWrap.delaytimer.clear();
-                            mediaWrap.delaytimer = null;
-                            mediaWrap.play();
-                            mediaWrap.status = '';
-                            // If delay, also check duration
-                            if (_duration > 0) {
-                                var t2 = new ht4f_timer(function () {
-									mediaWrap.durationtimer.clear();
-                                    mediaWrap.durationtimer = null;
-                                    mediaWrap.actualEnd = performance.now();
-                                    myDebugger.write(-1,mediaWrap.filename + ": Started at " + (mediaWrap.actualStart-mediaWrap.playStart));
-                                    myDebugger.write(-1,mediaWrap.filename + ": Duration is " + (mediaWrap.actualEnd-mediaWrap.actualStart));
-                                    mediaWrap.pause();
-                                }, _duration);
-                                mediaWrap.durationtimer = t2;
-                            }
-                        }, _delay);
-                        mediaWrap.status = 'delay';
-                        mediaWrap.delaytimer = t;
+            if ( (mediaWrap.elem.classList) && (mediaWrap.elem.classList.contains('nopreload')) ) {
+                mediaWrap.gainNode.gain.value = mediaWrap.elem.dataset.volume;
+            } // above code ends here and we do not try to restart media playing
+            else {
+                var t = new ht4f_timer(function () {
+                    mediaWrap.delaytimer.clear();
+                    mediaWrap.delaytimer = null;
+                    mediaWrap.play();
+                    myDebugger.write(-1,mediaWrap.filename + ": Started at " + (mediaWrap.actualStart-mediaWrap.playStart));
+
+                    mediaWrap.status = '';
+                    // If delay, also check duration
+                    if (_duration > 0) {
+                        var t2 = new ht4f_timer(function () {
+                            mediaWrap.durationtimer.clear();
+                            mediaWrap.durationtimer = null;
+                            mediaWrap.actualEnd = performance.now();
+                            myDebugger.write(-1,mediaWrap.filename + ": Duration is " + (mediaWrap.actualEnd-mediaWrap.actualStart));
+                            mediaWrap.pause();
+                        }, _duration);
+                        mediaWrap.durationtimer = t2;
                     }
+                }, _delay);
+                mediaWrap.delaytimer = t;
+                mediaWrap.status = 'delay';
             }
-			myDebugger.write(1, "justPlay is " + justPlay);
-            if (justPlay) {
-                mediaWrap.play();
-            }
-			
-        }
-		if (audioCtx.state === "suspended")
+    	}
+   		if (audioCtx.state === "suspended")
 			audioCtx.resume();
-
         this.updateText();
 
         // var showPlaying = $('#showlist')[0];
@@ -458,7 +458,7 @@ class ht4f_slide {
         //     showPlaying.innerHTML += (t + "\n");
         // }
     }
-
+}
     // used to update volume etc for media that crosses to the next slide
 
     updateBackground() {
