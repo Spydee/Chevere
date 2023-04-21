@@ -26,6 +26,7 @@ $(document).ready(function () {
 	masterGainNode = audioCtx.createGain();
 	masterGainNode.connect(audioCtx.destination);
 	masterGainNode.gain.value = 0.4;
+    masterTimeline = gsap.timeline({paused:true});
 		
 	SLIDE_DURATION_OFF = -1;	// duration = -1
 	SLIDE_DELAY_OFF = -1;		// DELAY=-1
@@ -159,13 +160,10 @@ class player {
 
     constructor() {
         this.state = 'stopped';   /* stopped, playing, paused, ended */
-        this.slidePlaying = 1;    /* current slide (no longer 0 based) */
-
-        this.timerStop = true;
         this.ULE = null;
-        this.autoTimer = null;
         this.myActiveSlide = null;
         this.myNextSlide = null;
+        this.gsapSlides = [];
     }
 
     /*********************************************************
@@ -185,13 +183,52 @@ class player {
         });
         //    this.ULE.addEventListener('full',  () => console.log('full') );
         searchPath = [jsondata.assetPath, jsondata.altPath, "."];
+        // set up global settings
 
-        this.loadFirstSlide();
+        this.loadTimeLines();
     }
 
     // called from init() and rewind()
-    loadFirstSlide() {
-        this.loadSlide(1, "rewind");
+    loadTimeLines() {
+        $(media_div).empty();
+        myDebugger.write(-1, "There are " + jsondata.slides.length + " slides");
+        for (const slide of jsondata.slides) {
+            var slideTween = new gsapSlide(slide);
+            this.gsapSlides.push(slideTween);
+            for (const media of slide.media)
+            {
+                
+
+            }
+        }
+        myDebugger.write(-1, "There are " + this.gsapSlides.length + " slides ready");
+        
+
+        var len = this.gsapSlides.length;
+        console.log(len);
+        
+        this.gsapSlides[0].next = this.gsapSlides[1];
+        for (let step = 1; step < len-1; step++) {
+            this.gsapSlides[step].next = this.gsapSlides[step+1];
+            this.gsapSlides[step].prev = this.gsapSlides[step-1];
+        }
+        this.gsapSlides[len-1].prev = this.gsapSlides[len-2];
+
+        myDebugger.write(-1, "loading...")
+           for (const slide of this.gsapSlides) {
+               $(media_div)[0].appendChild(slide.target);
+               masterTimeline.addLabel("slide" + slide.slideNo);
+               masterTimeline.add(slide.timeline, ">-1.5");
+        }
+
+/*        for (var sl of this.gsapSlides) {
+            myDebugger.write(-1, " current is " + sl.target.src);
+            if (sl.next)
+                myDebugger.write(-1, " next is " + sl.next.target.src);
+            if (sl.prev)
+                myDebugger.write(-1, " prev is " + sl.prev.target.src);
+        } 
+        */
     }
 
 
@@ -210,93 +247,21 @@ class player {
     }
 
     stopAutoTimer() {
-        if (this.autoTimer != null)
-            this.autoTimer.clear();
-        this.autoTimer = null;
     }
 
     fullStop() {
-        this.timerStop = true;
-        this.stopAutoTimer();
-        this.myActiveSlide.stopAll(true);
-        for (const m of myaniarray) {
-            m.pause();
-            m.seek(0);
-        }
 
     }
 
     checkAutoPlay() {
         return 1;
-        /*
-        let ap = document.getElementById("autoPlay");
-        if (!ap)
-            return 0;
-        else if (ap.checked)
-            return 1;
-        return 0;
-        */
     }
 
     transition_out() {
-        return new Promise(function (resolve, reject) {
-            $('.current').not('.keep').each(function () {
-                    if (this.tagName === "IMG" || this.tagName === "VIDEO" || this.tagName === "DIV")
-                        $(this).animate($(this).data('tranout'), 'slow');
-                    // add code to fade out the audio                          
-            });
-
-            $('.current').not('.keep').promise().done(function () {
-                $('.current').not('.keep').each(function () {
-						myDebugger.write(-1, "Removing " + this.src);
-                        $(this).remove();
-					});
-                });
-                resolve();
-            });
-            
     }
 
     transition_in() {
-        return new Promise(function (resolve, reject) {
-            // console.log('begin in');
-            $('.next').each(function () {
-                if ((this.tagName === "IMG" || this.tagName === "VIDEO") && $(this).data('tranin'))
-                    $(this).css($(this).data('trancss')).animate($(this).data('tranin'), 'slow');
-            });
 
-            $('.next').promise().done(function () {
-                //this.myActiveSlide.updateData();
-                resolve();
-            });
-        });
-    }
-
-
-    setDuration() {
-        let duration = 0;
-		const med = jsondata.slides[this.slidePlaying - 1].media;
-        for (const m of med) {
-            try {
-                if (m.delay + m.duration > duration)
-                    duration = m.delay + m.duration;
-            }
-            catch {
-                duration = 5000;
-            }
-        }
-        //myDebugger.write(1,'Duration: ' + duration);
-        this.autoTimer = new ht4f_timer(() => this.autoNext(), duration);
-
-        if (this.checkAutoPlay()) {
-            // preload next slide
-            if (this.slidePlaying < jsondata.slides.length) {
-                this.myNextSlide = new ht4f_slide(this.slidePlaying + 1, jsondata.slides[this.slidePlaying], false);
-                this.myNextSlide.preLoad('next');
-				//this.myNextSlide.setMasterVolume(this.masterVolume);
-          //      myDebugger.write(1,'Preloaded slide ' + (this.slidePlaying + 1));
-            }
-        }
     }
 
 
@@ -322,6 +287,7 @@ class player {
 	}
 	
     async play() {
+
         if (this.state == "paused") {
             this.resume();
             return;
@@ -331,24 +297,21 @@ class player {
             console.log("already at end");
             return;
         }
-
-        // play from stopped
-        this.timerStop = false;
+        myDebugger.write(-1,"Playing timelines");
+        //this.playtimelines();
+        masterTimeline.play(0);
+         //  for (var slide of this.gsapSlides) {
+         //     slide.play();
+   // }
         this.updatePlayState("play");
-
-        //console.log("Initial loadSlide volume is " + this.masterVolume);
-        //this.myActiveSlide.setMasterVolume(this.masterVolume);
-
-        this.myActiveSlide.playNewMedia(true);
-        playGSAPanimation(this.slidePlaying);
-
-        this.setDuration();
+        return;
+        this.updatePlayState("play");
 
     }
 
     pause() {
         //    console.log('pause received');
-        if (this.autoTimer != null)
+/*        if (this.autoTimer != null)
             this.autoTimer.pause();
         this.myActiveSlide.pauseAll();
         for (const m of myaniarray) {
@@ -358,11 +321,23 @@ class player {
         animations.forEach(animation => {
             animation.style.animationPlayState = 'paused';
         })
+*/
+        masterTimeline.pause();
+        //for (var slide of this.gsapSlides) {
+        //    slide.pause();
+        //}
         this.updatePlayState("pause");
     }
 
     resume() {
-        //    console.log('resume received');
+        masterTimeline.resume();
+        for (var slide of this.gsapSlides) {
+            slide.resume();
+        }
+        this.updatePlayState("play");
+        return;    
+
+
         if (this.autoTimer != null)
             this.autoTimer.resume();
         this.myActiveSlide.resumeAll();
@@ -378,29 +353,21 @@ class player {
     }
 
     rewind() {
-        this.fullStop();
-        this.loadFirstSlide();
-        this.updatePlayState("rewind");
+        masterTimeline.pause(0);
     }
 
     prev() {
-        this.fullStop();
-        if (this.slidePlaying <= 1) {
-            console.log("already at beginning");
-            this.updatePlayState("prev");
+        masterTimeline.pause();
+        for (var child of masterTimeline.getChildren()) {
+            if (child.isActive) {
+                child.seek(0);
+            }
         }
-        else
-            this.loadSlide(this.slidePlaying - 1, "prev");
+//        masterTimeline.seek(4); //seek("slide3");
+        this.updatePlayState("prev");
     }
 
     next() {
-        this.fullStop();
-        if (this.slidePlaying >= jsondata.slides.length) {
-            console.log("already at end");
-            this.updatePlayState("next");
-        }
-        else
-            this.loadSlide(this.slidePlaying + 1, "next");
     }
 
     stop() {

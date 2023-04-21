@@ -121,7 +121,8 @@
 		  {
 			"tag": "audio",
 			"classLst": [
-			  "ht4f_audio"
+			  "ht4f_audio",
+			  "narration"
 			],
 			"text": "Kayla_Slide1_96.mp3",
 			"delay": 7200,

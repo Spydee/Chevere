@@ -1,26 +1,94 @@
 class animatable {
-
     constructor(_elem) {
         this.elem = _elem;
-        this.timer = null;
     }
 
     play() {
         console.log("Doing undefined animation");
     }
 
-    delayTimer(duration) {
-        return new Promise ( async (resolve) => {
-            var t = new ht4f_timer(function() {
-                if (this.timer)
-                    this.timer.clear();
-                this.timer = null;
-                resolve();
-            }, duration);
-            this.timer = t;
-        })
-    }
 }
+
+class gsapSlide {
+
+    constructor(slide) {
+
+        this.target = null;
+        this.next = null;
+        this.prev = null;
+        this.timeline = null;
+        for (const med of slide.media) {
+            if (med.tag == "img") {
+                if (med.text.includes("ht4f")) {
+                    myDebugger.write(-1, "found: " + med.text);
+                    var elem = this.preload(med);
+                    this.target = elem;
+                }
+            }
+        }
+//        this.timeline = this.inLeftOutRight(this.target);
+        this.timeline = this.growInShrinkOut(this.target);
+
+        //this.inLeftOutRight();
+    }
+
+
+    inLeftOutRight(tgt) {
+        let t1 = gsap.timeline();
+        t1.from(tgt, {duration:1.5, x:"-100%",opacity:0.0})
+                .to(tgt, {duration:1.5, opacity:1.0, x:"+=0%"})
+                .to(tgt, {delay:3.0, duration:1.5, x:"+=100%", opacity:0.0});
+        return t1;
+    }
+
+    growInShrinkOut(tgt) {
+        let t1 = gsap.timeline();
+        t1.from(tgt, {duration:1.5, scaleX:0, scaleY:0, opacity:0.0})
+                .to(tgt, {duration:1.5, scaleX:1.0, scaleY:1.0, opacity:1.0})
+                .to(tgt, {delay:3.0, duration:1.5, scaleX:0.1, scaleY:0.1, opacity:0.2})
+                .to(tgt, {duration:1.5, x:"+=100%", opacity:0});
+        return t1;
+    }
+
+
+    preload(med) {
+        //myDebugger.write(-1, "creating " + med.tag);
+        const id = document.createElement(med.tag);
+        id.classList.add("ht4f_image");
+        id.classList.add("ht4f_aspect_ratio");
+        id.src = "media/" + med.text;
+        myDebugger.write(-1, "Source is " + id.src);
+
+        return id;
+    }
+
+    play() {
+        myDebugger.write(-1, "Starting play: " + this.target.src);
+        this.timeline.play();
+    }
+
+    pause() {
+        this.timeline.pause();
+    }
+
+    resume() {
+        this.timeline.resume();
+    }
+
+    next() {
+        this.timeline.next.seek(0);
+    }
+
+    prev() {
+        this.timeline.prev.seek(0);
+    }
+
+    stop() {
+        this.timeline.pause();
+    }
+
+}
+
 
 class gsapAnimation {
 
