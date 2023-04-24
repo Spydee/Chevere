@@ -13,21 +13,28 @@ class gsapSlide {
 
     constructor(slide) {
 
-        this.target = null;
+        this.targets = null;
         this.next = null;
         this.prev = null;
         this.timeline = null;
+        this.label = "slide" + slide.slideNo;
         for (const med of slide.media) {
             if (med.tag == "img") {
                 if (med.text.includes("ht4f")) {
-                    myDebugger.write(-1, "found: " + med.text);
                     var elem = this.preload(med);
                     this.target = elem;
+                    myDebugger.write(-1, "adding: " + elem.text);
+                }
+                else {
+
                 }
             }
         }
 //        this.timeline = this.inLeftOutRight(this.target);
         this.timeline = this.growInShrinkOut(this.target);
+    //    this.timeline.add(this.inLeftOutRight)(this.target[1]);
+        this.timeline.addLabel("slideEnd_"+slide.slideNo);
+   //     this.loadSlideAnimations(slide);
 
         //this.inLeftOutRight();
     }
@@ -54,13 +61,54 @@ class gsapSlide {
     preload(med) {
         //myDebugger.write(-1, "creating " + med.tag);
         const id = document.createElement(med.tag);
-        id.classList.add("ht4f_image");
-        id.classList.add("ht4f_aspect_ratio");
-        id.src = "media/" + med.text;
-        myDebugger.write(-1, "Source is " + id.src);
-
+        switch(med.tag) {
+            case "img":
+                    id.classList.add("ht4f_image");
+                    id.classList.add("ht4f_aspect_ratio");
+                    id.src = jsondata.assetPath + med.text;
+                break;
+            case "div":
+                break;
+            case "audio":
+                break;
+            default:
+                break;
+        }
+        myDebugger.write(-1, "Preloading" + id.src);
         return id;
     }
+
+    buildAnimations(anidef) {
+        var ta = gsap.timeline();
+        for (const twx of anidef.tweens) {
+            if (twx.from)
+                this.timeline.from(twx.target, twx.from[0], 0);
+            if (twx.to)
+                for (const twto of twx.to) {
+                    this.timeline.to(twx.target, twto, ">");
+                } 
+        }
+    }
+
+    findAnimation(animation) {
+        return animation.name == String(this);
+    }
+    
+    loadSlideAnimations(slide) {
+        var myArray = [];
+        myDebugger.write(-1, "There are " + slide.animations.length + " animations for this slide");
+        for (const animName of slide.animations) {
+            //myDebugger.write(-1, " Finding animations");
+            var gsapDef = gsapDefinitions.animations.find(this.findAnimation, animName);
+            if (gsapDef){
+                myDebugger.write(-1, "animation found: " + animName + " + " + gsapDef);
+            buildAnimations(gsapDef);
+           //     var mygsap = new gsapAnimation(gsapDef);
+           //     myArray.push(mygsap);
+            }
+        }
+    }
+
 
     play() {
         myDebugger.write(-1, "Starting play: " + this.target.src);
@@ -89,7 +137,7 @@ class gsapSlide {
 
 }
 
-
+/**********************************************************************/
 class gsapAnimation {
 
     constructor(anidef) {
@@ -99,34 +147,14 @@ class gsapAnimation {
 
     buildTimeline(anidef) {
     
-    let tl = gsap.timeline({paused:true});
-
-    //console.log(anidef.tweens.target, anidef.tweens[0].from);
-
-    // tl.from(anidef.tweens[0].target, anidef.tweens[0].from[0]);
-    // tl.to  (anidef.tweens[0].target, anidef.tweens[0].to[0]);
-    // tl.to  (anidef.tweens[0].target, anidef.tweens[0].to[1]);
-
         for (const twx of anidef.tweens) {
-            //if ($(twx.target)[0] instanceof HTMLAudioElement) {
-                // handle this different
-                // if (twx.from.volume && twx.from.volume > 0){
-                //     tl.from(twx.target, twx.from[0],
-                //         {onStart:function() { $(twx.target)[0].play()}}, 0);
-                // }
-
-            //     console.log("audio element");
-            // }
-            // else {
-                if (twx.from)
-                    tl.from(twx.target, twx.from[0], 0);
-                if (twx.to)
-                    for (const twto of twx.to) {
-                        tl.to(twx.target, twto, ">");
-                    } 
-            //}
+            if (twx.from)
+                this.timeline.from(twx.target, twx.from[0], 0);
+            if (twx.to)
+                for (const twto of twx.to) {
+                    this.timeline.to(twx.target, twto, ">");
+                } 
         }
-        this.tl = tl;
     }
 
     play() {
@@ -180,3 +208,4 @@ async function playGSAPanimation(slide) {
         ani.play();
     }   
 }
+

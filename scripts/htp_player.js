@@ -215,20 +215,21 @@ class player {
         this.gsapSlides[len-1].prev = this.gsapSlides[len-2];
 
         myDebugger.write(-1, "loading...")
+        var first = true;
            for (const slide of this.gsapSlides) {
                $(media_div)[0].appendChild(slide.target);
-               masterTimeline.addLabel("slide" + slide.slideNo);
-               masterTimeline.add(slide.timeline, ">-1.5");
+               myDebugger.write(-1, "adding label: " + slide.label);
+               if (first) {
+                masterTimeline.addLabel(slide.label, "+1.5");
+                masterTimeline.add(slide.timeline);
+                     first = false;
+               }
+                else {
+                    masterTimeline.addLabel(slide.label);
+                    masterTimeline.add(slide.timeline, ">-1.5");
+                }
         }
-
-/*        for (var sl of this.gsapSlides) {
-            myDebugger.write(-1, " current is " + sl.target.src);
-            if (sl.next)
-                myDebugger.write(-1, " next is " + sl.next.target.src);
-            if (sl.prev)
-                myDebugger.write(-1, " prev is " + sl.prev.target.src);
-        } 
-        */
+        masterTimeline.tweenTo(1.5);
     }
 
 
@@ -271,22 +272,7 @@ class player {
 
     // Play or Resume from Pause
 
-	testAudio() {
-        if (debugWriteEnable === false)
-            return;
-		let myAudio = $('.ht4f_audio');
-		let s = "";
-		myAudio.each(function (index, value) {
-			$.each(myAudio.attr('class').split(' '), function(index, value) {
-                s += value;
-            });
-			myDebugger.write(-1,"Media is : " + value.src);
-			myDebugger.write(-1,"ClassList is : " + s + ' ');
-		});
-
-	}
-	
-    async play() {
+    play() {
 
         if (this.state == "paused") {
             this.resume();
@@ -298,34 +284,14 @@ class player {
             return;
         }
         myDebugger.write(-1,"Playing timelines");
-        //this.playtimelines();
-        masterTimeline.play(0);
-         //  for (var slide of this.gsapSlides) {
-         //     slide.play();
-   // }
+        
+        masterTimeline.play();
         this.updatePlayState("play");
         return;
-        this.updatePlayState("play");
-
     }
 
     pause() {
-        //    console.log('pause received');
-/*        if (this.autoTimer != null)
-            this.autoTimer.pause();
-        this.myActiveSlide.pauseAll();
-        for (const m of myaniarray) {
-            m.pause();
-        }
-        const animations = document.querySelectorAll('.animation');
-        animations.forEach(animation => {
-            animation.style.animationPlayState = 'paused';
-        })
-*/
         masterTimeline.pause();
-        //for (var slide of this.gsapSlides) {
-        //    slide.pause();
-        //}
         this.updatePlayState("pause");
     }
 
@@ -353,95 +319,33 @@ class player {
     }
 
     rewind() {
-        masterTimeline.pause(0);
+        masterTimeline.pause();
+        masterTimeline.seek(0);
     }
 
     prev() {
         masterTimeline.pause();
-        for (var child of masterTimeline.getChildren()) {
-            if (child.isActive) {
-                child.seek(0);
-            }
+        const lbl = masterTimeline.previousLabel();
+        if (lbl) {
+            masterTimeline.seek(lbl);
         }
-//        masterTimeline.seek(4); //seek("slide3");
+        else {
+            masterTimeline.seek(1.5);
+        }
+        
         this.updatePlayState("prev");
     }
 
     next() {
+        masterTimeline.pause();
+        masterTimeline.seek(masterTimeline.nextLabel());
+        this.updatePlayState("next");
+        
     }
 
     stop() {
         this.fullStop();
         this.updatePlayState("stop");
-    }
-
-    /**
-     * called from timeout function
-     * stop timers
-     * check if at the end
-     * transition and play slides
-     * start next timeout timer
-     */
-
-    async autoNext() {
-		//this.testAudio();
-		//this.myActiveSlide.setMasterVolume(this.masterVolume);
-        // if timer is stopped, prevent glitch caused by late timeout
-        if (this.timerStop)
-            return;
-
-        this.stopAutoTimer();
-
-        if (this.state === "ended") {  // shouldn't happen, but...
-            return;
-        }
-
-        // get background music if it continues
-        let bg = null;
-        if (!this.myActiveSlide.bgEnds)
-            bg = this.myActiveSlide.getBg();
-
-        // stop all except bg (stop bg if it ends)
-        this.myActiveSlide.stopAll(this.myActiveSlide.bgEnds);
-
-        // on last slide?
-        if (this.slidePlaying >= jsondata.slides.length) {
-            if (bg)
-                bg.stop();
-            this.state = "ended";
-            this.updatePlayState('ended');
-            return;
-        }
-
-        this.slidePlaying += 1;
-        this.updatePlayState("auto");
-
-        // TRANSITION TO NEXT SLIDE
-        console.log("\n\r audio level");
-        this.myActiveSlide.updateBackground();
-        console.log("\n\n\r\r audio level");
-        this.ULE.dispatchEvent(new Event('transition-start'));
-        await Promise.all([this.transition_out(), this.transition_in()]);
-        //console.log("Initial loadSlide volume is " + this.masterVolume);
-
-        $('.next').each(function () {
-            $(this).addClass('current');
-            $(this).removeClass('next');
-        });
-        this.ULE.dispatchEvent(new Event('transition-end'));
-
-        this.myActiveSlide = this.myNextSlide;
-        playGSAPanimation(this.slidePlaying);
-        this.myActiveSlide.playNewMedia(false);
-
-        //        await this.animation(this.myActiveSlide.mediaArray);
-
-        if (bg != null) {
-            this.myActiveSlide.mediaArray.push(bg);
-        }
-
-        this.setDuration();
-
     }
 
 
