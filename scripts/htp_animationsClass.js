@@ -13,7 +13,7 @@ class gsapSlide {
 
     constructor(slide) {
 
-        this.targets = null;
+        this.targets = [];
         this.next = null;
         this.prev = null;
         this.timeline = null;
@@ -22,8 +22,8 @@ class gsapSlide {
             if (med.tag == "img") {
                 if (med.text.includes("ht4f")) {
                     var elem = this.preload(med);
-                    this.target = elem;
-                    myDebugger.write(-1, "adding: " + elem.text);
+               //     this.targets.push(elem);
+                    myDebugger.write(-1, "pushing: " + elem.text);
                 }
                 else {
 
@@ -31,7 +31,8 @@ class gsapSlide {
             }
         }
 //        this.timeline = this.inLeftOutRight(this.target);
-        this.timeline = this.growInShrinkOut(this.target);
+        this.timeline = gsap.timeline();
+        this.timeline.add(this.growInShrinkOut(this.target[0]));
     //    this.timeline.add(this.inLeftOutRight)(this.target[1]);
         this.timeline.addLabel("slideEnd_"+slide.slideNo);
    //     this.loadSlideAnimations(slide);

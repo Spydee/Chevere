@@ -26,12 +26,13 @@
 			"duration": 12500,
 			"transition": {
 			  "tranCss": {
-				"opacity": 0.0
+				"opacity": 1.0
 			  },
 			  "tranIn": {
 				"opacity": 1.0
 			  },
 			  "tranOut": {
+				"duration":1.5,
 				"opacity": 0.0
 			  }
 			}
@@ -150,7 +151,6 @@
 		  {
 			"tag": "img",
 			"classLst": [
-			  "ht4f_div",
 			  "ht4f_image",
 			  "ht4f_aspect_ratio"
 			],
@@ -160,7 +160,7 @@
 			"duration": 10500,
 			"transition": {
 			  "tranCss": {
-				"opacity": 0
+				"opacity": 0.0
 			  },
 			  "tranIn": {
 				"opacity": 1.0
@@ -265,7 +265,6 @@
 		  {
 			"tag": "img",
 			"classLst": [
-			  "ht4f_div",
 			  "ht4f_image",
 			  "ht4f_aspect_ratio"
 			],
@@ -660,7 +659,7 @@
       "content": []
     },
     {
-      "slideNo": "",
+      "slideNo": "9",
       "slideTitle": "Slide 9: The End",
       "animations": [],
       "media": [

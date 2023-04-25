@@ -21,12 +21,12 @@ $(document).ready(function () {
 	gsapDefinitions = "";
 	
 	/* Audio API Global context */
-	const AudioContext = window.AudioContext || window.webkitAudioContext;
-	audioCtx = new AudioContext();
-	masterGainNode = audioCtx.createGain();
-	masterGainNode.connect(audioCtx.destination);
-	masterGainNode.gain.value = 0.4;
-    masterTimeline = gsap.timeline({paused:true});
+//	const AudioContext = window.AudioContext || window.webkitAudioContext;
+//	audioCtx = new AudioContext();
+//	masterGainNode = audioCtx.createGain();
+//	masterGainNode.connect(audioCtx.destination);
+//	masterGainNode.gain.value = 0.4;
+  masterTimeline = gsap.timeline({paused:true});
 		
 	SLIDE_DURATION_OFF = -1;	// duration = -1
 	SLIDE_DELAY_OFF = -1;		// DELAY=-1
@@ -184,52 +184,26 @@ class player {
         //    this.ULE.addEventListener('full',  () => console.log('full') );
         searchPath = [jsondata.assetPath, jsondata.altPath, "."];
         // set up global settings
-
         this.loadTimeLines();
     }
 
     // called from init() and rewind()
     loadTimeLines() {
         $(media_div).empty();
-        myDebugger.write(-1, "There are " + jsondata.slides.length + " slides");
+        let first = true;
         for (const slide of jsondata.slides) {
-            var slideTween = new gsapSlide(slide);
-            this.gsapSlides.push(slideTween);
-            for (const media of slide.media)
-            {
-                
-
+            myDebugger.write(-1, "Preparing slide " + slide.slideNo);
+            var tili = new slideTimeline(slide);
+            masterTimeline.add(tili.createTimeline());
+            if (first) {
+                masterTimeline.addLabel("slide_" + slide.slideNo, "<");
+                first = false;
             }
-        }
-        myDebugger.write(-1, "There are " + this.gsapSlides.length + " slides ready");
-        
+            else
+                masterTimeline.addLabel("slide_" + slide.slideNo, "<+1.5");
 
-        var len = this.gsapSlides.length;
-        console.log(len);
-        
-        this.gsapSlides[0].next = this.gsapSlides[1];
-        for (let step = 1; step < len-1; step++) {
-            this.gsapSlides[step].next = this.gsapSlides[step+1];
-            this.gsapSlides[step].prev = this.gsapSlides[step-1];
+            console.log(tili);
         }
-        this.gsapSlides[len-1].prev = this.gsapSlides[len-2];
-
-        myDebugger.write(-1, "loading...")
-        var first = true;
-           for (const slide of this.gsapSlides) {
-               $(media_div)[0].appendChild(slide.target);
-               myDebugger.write(-1, "adding label: " + slide.label);
-               if (first) {
-                masterTimeline.addLabel(slide.label, "+1.5");
-                masterTimeline.add(slide.timeline);
-                     first = false;
-               }
-                else {
-                    masterTimeline.addLabel(slide.label);
-                    masterTimeline.add(slide.timeline, ">-1.5");
-                }
-        }
-        masterTimeline.tweenTo(1.5);
     }
 
 
@@ -338,7 +312,9 @@ class player {
 
     next() {
         masterTimeline.pause();
+        console.log("Seek to " + masterTimeline.nextLabel());
         masterTimeline.seek(masterTimeline.nextLabel());
+//        masterTimeline.play();
         this.updatePlayState("next");
         
     }
