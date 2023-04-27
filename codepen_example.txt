@@ -1,0 +1,135 @@
+<div id="container" >
+     <div id="square1"></div>
+     <div id="square2"></div>
+</div>
+<button id="playbtn" >play</button>
+
+////////// CSS //////////////
+
+#container {
+  position:relative;
+  width:30%;
+  aspect-ratio: 1;
+  background: green;
+}
+#square1 {
+  position:absolute;
+  width: 30%;
+  aspect-ratio: 1.0;
+  background: blue;
+}
+
+#square2 {
+  position:absolute;
+  width: 30%;
+  aspect-ratio: 1.0;
+  background: red;
+}
+
+#button {
+  position:absolute;
+  left:'5%';
+  top:'10%';
+}
+
+
+//////////////// JS //////////////////
+var masterTL = gsap.timeline({paused:true});
+var t1 = gsap.timeline();
+t1.fromTo($('#square1'), {opacity:1, x:0, y:0}, {opacity:1, x:200, duration:1.5});
+var t2 = gsap.timeline();
+t2.fromTo($('#square2'), {opacity:1, x:0, y:200}, {delay:0.5, opacity:1, x:250, duration:3});
+masterTL.add(t1);
+masterTL.add(t2, ">");
+
+const div1 = document.getElementById('playbtn');
+div1.addEventListener('click', function() {masterTL.play(0);});
+
+
+
+
+/***************************************************************************/
+
+
+
+
+<button id="playbtn" >play</button>
+<button id="nextbtn" >prev</button>
+<button id="nextbtn" >next</button>
+<div id="container" >
+     <div id="square1"></div>
+     <div id="square2"></div>
+     <div id="square3"></div>
+</div>
+
+
+#container {
+  position:relative;
+  width:400px;
+  left:20px;
+  aspect-ratio: 1.6;
+  background: green;
+}
+#square1 {
+  position:absolute;
+  width: 200px;
+  aspect-ratio: 1.0;
+  background: blue;
+}
+
+#square2 {
+  position:absolute;
+  width: 200px;
+  aspect-ratio: 1.0;
+  background: red;
+}
+
+#square3 {
+  position:absolute;
+  width: 200px;
+  aspect-ratio: 1.0;
+  background: white;
+}
+
+#button {
+  position:absolute;
+  left:'5%';
+  top:'10%';
+}
+
+var masterTL = gsap.timeline({paused:true});
+var t1 = gsap.timeline();
+t1.fromTo($('#square1'), {opacity:0.5, x:200, y:20}, {delay:0, opacity:1, x:200, duration:1.5});
+t1.to($('#square1'), {delay:3, opacity:0, x:350, y:20, duration:1.5}, '>');
+
+var t2 = gsap.timeline();
+t2.fromTo($('#square2'), {opacity:0.0, x:0, y:20}, {delay:0.0, opacity:1, x:200, duration:1.5});
+t2.to($('#square2'), {delay:2, opacity:0, x:350, y:20, duration:1.5}, '>');
+
+var t3 = gsap.timeline();
+t3.fromTo($('#square3'), {opacity:0.1, x:0, y:20}, {delay:0.0, opacity:1, x:200, duration:1.5});
+
+masterTL.add(t1);
+masterTL.addLabel("box1", '<+0.75');
+masterTL.add(t2, ">-1.5");
+masterTL.addLabel("box2", '<+1.5');
+masterTL.add(t3, ">-1.5");
+masterTL.addLabel("box3", '<+1.5');
+
+const btn1 = document.getElementById('playbtn');
+btn1.addEventListener('click', function() {masterTL.play(0);});
+
+const btn2 = document.getElementById('prevbtn');
+btn2.addEventListener('click', function() {
+          masterTL.pause();
+          masterTL.seek(masterTL.previousLabel());
+});
+
+
+const btn3 = document.getElementById('nextbtn');
+btn3.addEventListener('click', function() { 
+          masterTL.pause();
+          masterTL.seek(masterTL.nextLabel());
+});
+
+  

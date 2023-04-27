@@ -1,9 +1,9 @@
 {
 	"title": "A Slide Show Test File",
-	"version": "0.0",
+	"version": "0.3",
 	"assetPath": "media/",
 	"altPath": "animations/",
-	"defaultImage": "ht4f1.png",
+	"defaultImage": "",
 	"slides": [
 	  {
 		"slideNo": "1",
@@ -17,25 +17,11 @@
 			"tag": "img",
 			"classLst": [
 			  "ht4f_image",
-			  "ht4f_aspect_ratio",
-			  "background"
+			  "ht4f_aspect_ratio"
 			],
             "text": "ht4f1.png",
-			"delay": 0,
-			"offsetTime": 0,
-			"duration": 12500,
-			"transition": {
-			  "tranCss": {
-				"opacity": 1.0
-			  },
-			  "tranIn": {
-				"opacity": 1.0
-			  },
-			  "tranOut": {
-				"duration":1.5,
-				"opacity": 0.0
-			  }
-			}
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "img",
@@ -155,22 +141,9 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f2.png",
-			"delay": 0,
-			"offsetTime": 0,
-			"duration": 10500,
-			"transition": {
-			  "tranCss": {
-				"opacity": 0.0
-			  },
-			  "tranIn": {
-				"opacity": 1.0
-			  },
-			  "tranOut": {
-				"opacity": 0.0,
-				"left":"100%"
-			  }
-			}
-		  },
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
+			},
 		  {
 			"tag": "audio",
 			"classLst": [
@@ -269,21 +242,9 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f3.png",
-			"delay": 0,
-			"offsetTime": 0,
-			"duration": 18000,
-			"transition": {
-			  "tranCss": {
-				"opacity": 0
-			  },
-			  "tranIn": {
-				"opacity": 1.0
-			  },
-			  "tranOut": {
-				"opacity": 0.0,
-				"top": "100%"
-			  }
-			}
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
+
 		  },
 		  {
 			"tag": "audio",
@@ -336,11 +297,13 @@
 			],
 			"text": "tki_movie2_x264_001.mp4",
 			"style": "position: absolute; width:50%; left:50%; top:43%; z-index:5;",
-			"delay": 16500,
-			"offsetTime": 0,
-			"duration": 5500,
+			"playTime": {
+				"playStart": 16.5,
+				"playPause" : 19
+			},
 			"transition": {
 			  "tranCss": {
+				"delay":0,
 				"opacity": 0,
 				"top": "\u002B=100%"
 			  },
@@ -349,6 +312,8 @@
 				"top": "-=100%"
 			  },
 			  "tranOut": {
+				"delay":22000,
+				"duration": 11.5,
 				"opacity": 0.0,
 				"left": "-100%"
 			  }
@@ -372,28 +337,12 @@
 		  {
 			"tag": "img",
 			"classLst": [
-			  "ht4f_div",
 			  "ht4f_image",
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f4.png",
-			"delay": 0,
-			"offsetTime": 0,
-			"duration": 6500,
-			"transition": {
-			  "tranCss": {
-				"opacity": 0,
-				"top": "100%"
-			  },
-			  "tranIn": {
-				"opacity": 1.0,
-				"top": "-=100%"
-			  },
-			  "tranOut": {
-				"opacity": 0.0,
-				"left": "-=100%"
-			  }
-			}
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "audio",
@@ -458,27 +407,10 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f5.png",
-			"delay": 0,
-			"offsetTime": 0,
-			"duration": 5000,
-			"transition": {
-			  "tranCss": {
-				"opacity": 0,
-				"top": "+=100%",
-				"width": "100%"
-			  },
-			  "tranIn": {
-				"opacity": 1.0,
-				"top": "-=100%",
-				"width": "100%"
-			  },
-			  "tranOut": {
-				"opacity": 0.0,
-				"top":"-100%"
-			  }
-			}
-		  },
-		  {
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
+ 		 },
+		 {
 			"tag": "audio",
 			"classLst": [
 			  "ht4f_audio",
@@ -515,26 +447,12 @@
 		  {
 			"tag": "img",
 			"classLst": [
-			  "ht4f_div",
 			  "ht4f_image",
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f6.png",
-			"style": "left:0;",
-			"transition": {
-			  "tranCss": {
-				"opacity": 0,
-				"top": "+=100%"
-			  },
-			  "tranIn": {
-				"opacity": 1.0,
-				"top": "-=100%"
-			  },
-			  "tranOut": {
-				"opacity": 0.0,
-				"top": "+=100%"
-			  }
-			}
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "audio",
@@ -576,19 +494,8 @@
             "ht4f_aspect_ratio"
 			],
 			"text": "ht4f7.png",
-			"style": "left:0;",
-			"transition": {
-			  "tranCss": {
-				"opacity": 0,
-				"left": "-=100%",
-				"width": "10%"
-			  },
-			  "tranIn": {
-				"opacity": 1.0,
-				"left": "\u002B=100%",
-				"width": "100%"
-			  }
-			}
+			"set":{"x":0, "y":0, "autoalpha":0},
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "audio",
@@ -632,28 +539,8 @@
             "ht4f_aspect_ratio"
           ],
           "text": "ht4f8.png",
-          "delay": 0,
-          "offsetTime": 0,
-          "duration": 4000,
-          "volume": 0.5,
-          "transition": {
-            "useDefaultTrans": false,
-            "tranCss": {
-              "opacity": 0,
-			  "width": "5%",
-			  "left" : "+=50%",
-			  "top" : "+=50%"
-            },
-            "tranIn": {
-              "opacity": 1,
-			  "width":"100%",
-			  "left" : "-=50%",
-			  "top" : "-=50%"
-            },
-            "tranOut": {
-              "opacity": 0
-            }
-          }
+		  "set":{"x":0, "y":0, "autoalpha":0},
+		  "style": "position:absolute;"
         }
       ],
       "content": []
@@ -667,30 +554,10 @@
           "mediaName": "pptBackground",
           "tag": "img",
           "classLst": [
-            "ht4f_div",
             "ht4f_image",
             "ht4f_aspect_ratio"
           ],
-          "text": "ht4f9.png",
-          "delay": 0,
-          "offsetTime": 0,
-          "duration": 4000,
-          "volume": 0.5,
-          "transition": {
-            "useDefaultTrans": false,
-            "tranCss": {
-              "opacity": 0,
-              "left": "-100%"
-            },
-            "tranIn": {
-              "opacity": 1,
-              "left": "0%"
-            },
-            "tranOut": {
-              "opacity": 0,
-              "left": "100%"
-            }
-          }
+          "text": "ht4f9.png"
         }
       ],
       "content": [

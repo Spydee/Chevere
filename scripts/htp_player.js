@@ -194,16 +194,20 @@ class player {
         for (const slide of jsondata.slides) {
             myDebugger.write(-1, "Preparing slide " + slide.slideNo);
             var tili = new slideTimeline(slide);
-            masterTimeline.add(tili.createTimeline());
+
             if (first) {
-                masterTimeline.addLabel("slide_" + slide.slideNo, "<");
+                masterTimeline.add(tili.createTimeline());
+                masterTimeline.addLabel("slide_" + slide.slideNo, '<+0.75');
                 first = false;
             }
-            else
-                masterTimeline.addLabel("slide_" + slide.slideNo, "<+1.5");
-
+            else {
+                masterTimeline.add(tili.createTimeline(), '>-0.75');
+                masterTimeline.addLabel("slide_" + slide.slideNo, '<+0.75' );
+            }
+            myDebugger.write(-1, "Label is " + "slide_" + slide.slideNo);
             console.log(tili);
         }
+        masterTimeline.seek(0.75);
     }
 
 
@@ -301,22 +305,20 @@ class player {
         masterTimeline.pause();
         const lbl = masterTimeline.previousLabel();
         if (lbl) {
+            console.log("Seek to " + lbl);
             masterTimeline.seek(lbl);
         }
-        else {
-            masterTimeline.seek(1.5);
-        }
-        
         this.updatePlayState("prev");
     }
 
     next() {
         masterTimeline.pause();
-        console.log("Seek to " + masterTimeline.nextLabel());
-        masterTimeline.seek(masterTimeline.nextLabel());
-//        masterTimeline.play();
-        this.updatePlayState("next");
-        
+        const lbl =  masterTimeline.nextLabel();
+        if (lbl) {
+            console.log("Seek to " + lbl);
+            masterTimeline.seek(lbl);
+           this.updatePlayState("next");
+        }
     }
 
     stop() {
