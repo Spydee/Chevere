@@ -390,7 +390,7 @@ input[type="radio"] {
     }
 
         .slider progress::-webkit-progress-bar {
-            background-color:;
+            background-color: red;
         }
 
         .slider progress::-webkit-progress-value {

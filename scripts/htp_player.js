@@ -211,19 +211,6 @@ class player {
     }
 
 
-    // called from prev() and next()
-    loadSlide(slideno, playstate) {
-        // short delay to allow any current activity to end
-        setTimeout(function () {
-            $(media_div).empty();
-            this.myActiveSlide = new ht4f_slide(slideno, jsondata.slides[slideno - 1], true);
-            this.myActiveSlide.preLoad("current");
-            this.myActiveSlide.updateText();
-            this.slidePlaying = slideno;
-            this.updatePlayState(playstate);
-            myDebugger.write(-1, 'Loaded slide ' + slideno);
-        }.bind(this), 100);
-    }
 
     stopAutoTimer() {
     }

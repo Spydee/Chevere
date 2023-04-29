@@ -20,17 +20,22 @@
 			  "ht4f_aspect_ratio"
 			],
             "text": "ht4f1.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
+			"set":{"x":0, "y":0, "alpha":0.5},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"0%", "alpha":1.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":4, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "img",
 			"classLst": [
-			  "theCloud",
-			  "animation"
+				"ht4f_image",
+				"ht4f_aspect_ratio",
+				"animation"
 			],
-			"text": "Cloud.png",
-			"style": "position:absolute;left:50%;top:10%;width:50%;transform:translateX(-150%);z-index:7;opacity:0"
+			"set":{"position":"absolute","left":"50%","top":"10%","width":"25%","transform":"translateX(-150%)","z-index":7,"opacity":0},
+			"text": "Cloud.png"
 		  },
 		  {
 			"tag": "img",
@@ -141,8 +146,12 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f2.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			}
 			},
 		  {
 			"tag": "audio",
@@ -242,9 +251,12 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f3.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
-
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.5}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2, "x":"+=100", "alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "audio",
@@ -341,8 +353,12 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f4.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.1}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "audio",
@@ -407,8 +423,12 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f5.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
  		 },
 		 {
 			"tag": "audio",
@@ -451,8 +471,12 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f6.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"y":"-100%", "alpha":0}, "to": {"y":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "audio",
@@ -494,8 +518,12 @@
             "ht4f_aspect_ratio"
 			],
 			"text": "ht4f7.png",
-			"set":{"x":0, "y":0, "autoalpha":0},
-			"style": "position:absolute;"
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "audio",
@@ -539,9 +567,13 @@
             "ht4f_aspect_ratio"
           ],
           "text": "ht4f8.png",
-		  "set":{"x":0, "y":0, "autoalpha":0},
-		  "style": "position:absolute;"
-        }
+		  "set":{"x":0, "y":0, "alpha":0},
+		  "style": "position:absolute;",
+		  "transition":{
+			  "tranin":{"from":{"x":"-100%", "alpha":0.5}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+			  "tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+		  }
+	  }
       ],
       "content": []
     },
@@ -557,7 +589,13 @@
             "ht4f_image",
             "ht4f_aspect_ratio"
           ],
-          "text": "ht4f9.png"
+          "text": "ht4f9.png",
+		  "set":{"x":0, "y":0, "alpha":0},
+		  "style": "position:absolute;",
+		  "transition":{
+			  "tranin":{"from":{"y":"-100%", "x":"-=100%", "alpha":0.5}, "to": {"x":"0%", "y":"0%", "alpha":1.0, "duration":0.75}},
+			  "tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+		  }
         }
       ],
       "content": [
