@@ -50,7 +50,7 @@
       {"name":"danceBanana","type":"img",
             "tweens":[{"target":"#danceBanana", "from":[{"delay":0.5,"duration":3, "autoAlpha":0}], 
                               "to":null}
-            ]}
-	  
+            ]}	  
+
 
 ]}

@@ -1,7 +1,7 @@
 class slideTimeline {
     constructor(slide) {
         this.slide = slide;
-        this.timeline = gsap.timeline();
+        this.timeline = gsap.timeline({paused:true});
         this.elems = [];
         myDebugger.write(-1, "constructing");
     }
@@ -22,27 +22,34 @@ class slideTimeline {
         var boxSize = this.getContainerSize($(media_div)[0]);
         myDebugger.write(-1, "Container is " + boxSize.w + " x " + boxSize.h);
 
-        this.tranTimeline = gsap.timeline();
-//        var animationTimeline = gsap.timeline();
+        this.tranTimeline = gsap.timeline({paused:true});
+        /************ First create the transitions ******************/
         for (const m of this.slide.media) {
-            if (!m.text.includes("ht4f")) 
-                continue;
+//            if ( (!m.text.includes("ht4f")) && (!m.text.includes("oud") ) && (!m.text.includes("olt") ) )
+  //              continue;
             myDebugger.write(-1, "creating " + m.tag + ": " + m.text);
             var elem = this.createMedia(m);
             myDebugger.write(-1, "add props");
             this.addProperties(m, elem);
-            myDebugger.write(-1, "add transitions");
+            myDebugger.write(-1, "add transitions: " + m.text);
             this.addTransitions(m, elem);
-  //          myDebugger.write(-1, "add animations");
-  //          this.addAnimations(m, elem, animationTimeline);
 
             myDebugger.write(-1, "push and append");
             this.elems.push(elem);
             $(media_div)[0].appendChild(elem);
         }
+        myDebugger.write(-1, "media and transitions created");
+        this.animationTimeline = gsap.timeline({paused:true});
+        this.createAnimation(this.slide);
+
         myDebugger.write(-1, "adding timelines");
-        this.timeline.add(this.tranTimeline, '<');
-        //this.timeline.add(animationTimeline);
+        try {
+//            this.tranTimeline.eventCallback("onComplete", updateText, ["slide"]);
+            this.timeline.add(this.tranTimeline, '<');
+            this.timeline.add(this.animationTimeline, '<');
+        }
+        catch(e)
+            {myDebugger.write(-1, "$ERROR$: " + e.message)};
 
         myDebugger.write(-1, "done with slide " + this.slide.slideNo);
         return this.timeline;
@@ -72,7 +79,7 @@ class slideTimeline {
                 //            $(ele).data('audible', 0);
                 //          $(ele).data('playable', 0);
                 break;
-            default:
+            default: // ul, li, 
                 $(ele).data('viewable', 1);
                 $(ele).data('audible', 0);
                 $(ele).data('playable', 0);
@@ -80,6 +87,10 @@ class slideTimeline {
 
         if ((m.text) && (m.text.length > 0)) {
             ele.src = jsondata.assetPath + m.text;
+        }
+
+        if (m.content) {
+            $(ele).data('content', m.content);
         }
             // find a way to make sure we don't load more than one background
             // only permit background to extend beyond the slide
@@ -101,7 +112,12 @@ class slideTimeline {
             ele.setAttribute("style", m.style);
             myDebugger.write(-1, "Setting styles = " + m.style);
         }
-        
+
+        if (m.innerHTML) {
+            ele.innerHTML = m.innerHTML;
+            myDebugger.write(-1, "Adding innerHTML");
+        }
+
         if (m.set) {
             myDebugger.write("setting ..");
             $(ele).data('set', m.set );
@@ -124,7 +140,7 @@ class slideTimeline {
         if (m.transition) {
             //$(ele).data('tranin', m.transition.tranIn);
             //$(ele).data('tranout', m.transition.tranOut);
-            this.tranTimeline.fromTo(ele, m.transition.tranin.from, m.transition.tranin.to, '<');
+            this.tranTimeline.fromTo(ele, m.transition.tranin.from, m.transition.tranin.to, 0);
 
             myDebugger.write(-1, "transition is " + m.transition);
             this.tranTimeline.to(ele, m.transition.tranout.to, '>');
@@ -143,106 +159,106 @@ class slideTimeline {
         return containSize;
     }
 
-    fixedTransition() {
-        for (const ele of this.elems) {
-            if (!$(ele).data('viewable'))
-                continue;
-            myDebugger.write(-1, "setting properties and transitions for " + ele.src);
-            if (!$(ele).data('set')) {
-                myDebugger.write(-1, "Setting default props for img: " + ele.tagName);
-                gsap.set(ele, {x:0, y:0, scaleX:"80%", alpha:0});
-                ele.style="position:absolute";
-            }
-            myDebugger.write(-1, 'properties set');
+    createAnimation(slide) {
+        myDebugger.write(-1, "creating animation timeline");
+        for (const animName of slide.animations) {
+            myDebugger.write(-1, "Searching ...");
 
-            var t1 = gsap.timeline();
-            let fromVars = {};
-            let toInVars = {};
-            let toOutVars = {};
-
-            if ($(ele).data('tranin')) {
-                    fromVars = $(ele).data('tranin').from;
-                    toInVars = $(ele).data('tranin').to;
+            let gsapDef;
+            try {
+                gsapDef = gsapDefinitions.animations.find(this.findAnimation, animName);
+                console.log(gsapDef);
+                if (gsapDef){
+                    myDebugger.write(-1, "animation found: ", animName);
+                  //  var mygsap = new gsapAnimation(gsapDef);
+                    this.animationTimeline.add(this.buildAnimation(gsapDef));
                 }
-            else {
-                fromVars = { alpha: 0.0, x: "-100%", y: 0 };  // this is relative to set position above
-                toInVars = { opacity: 1, x: "+=100%", y: 0, duration: 0.75 };
+                else {
+                    myDebugger.write(-1, "No animations found for slide " + slide.slideNo);
+                }
             }
-      //      if (!$(ele).data.tranout) {
-                toOutVars = { delay: 3.5, opacity: 0, duration: 0.75, x: "+=100%" };
-      //      }
-            myDebugger.write(-1, "trans set");
-                t1.fromTo(ele, fromVars, toInVars);
-                t1.to(ele, toOutVars, '>');
-                this.timeline.add(t1, '<');
+            catch (e) {
+                myDebugger.write(-1, "Error adding " + gsapDef + " to animations");
+            }
+
+
         }
     }
+    
+// 'this' is actually animationName - it is passed as the second parameter
+// in the find statement below.  Not the most obvious coding, but it works
 
+    findAnimation(animation) {
+        return animation.name == String(this);
+    }
 
-tlTransition() {
-    for (const ele of this.elems) {
-        if (!$(ele).data('viewable'))
-            continue;
-        var t1 = gsap.timeline();
-        let fromVars = {};
-        let toInVars = {};
-        let toOutVars = {};
-        if ($(ele).data('transition')) {
-            //      myDebugger.write(-1, "checking " + $(ele).data('transition').tranCss);
-            if ($(ele).data('transition').tranCss) {
-                fromVars = $(ele).data('transition').tranCss;
-                if (!fromVars.duration)
-                    fromVars.duration = 1.5;
-                //                    if (!fromVars.delay)
-                //                      fromVars.delay = $(ele).data.delay;
-            }
-            else {
-                fromVars = { duration: 1.5, opacity: 0 };
-            }
-            t1.from(ele, fromVars, 0);
-
-            if ($(ele).data('transition').tranIn) {
-                toInVars = ($(ele).data('transition').tranIn)
-                if (!toInVars.duration)
-                    toInVars.duration = 1.5;
-                if (!toInVars.delay)
-                    toInVars.delay = $(ele).data("delay") / 1000;
-            }
-            else {
-                toInVars = { delay: $(ele).delay / 1000, opacity: 1, duration: 1.5 };
-            }
-            t1.to(ele, toInVars, '>');
-            //   myDebugger.write(1, "Defining TranOut for " + ele.src);
-            if ($(ele).data('transition').tranOut) {
-                toOutVars = $(ele).data('transition').tranOut;
-                if (!toOutVars.delay)
-                    toOutVars.delay = 6; //$(ele).data('duration')/1000;
-                if (!toOutVars.duration)
-                    toOutVars.duration = 1.5;
-            }
-            else {
-                toOutVars = { opacity: 0 };
-            }
-            t1.to(ele, toOutVars, '>');
-            myDebugger.write(1, "Defined TranOut for " + ele.src);
-            myDebugger.write(1, toOutVars);
-
-            //          myDebugger.write(-1, ele.tagName + "has trancss = " + $(ele).data('transition').tranCss);
-
-            // this is added at the end even though it is played in the middle.
-            if ($(ele).data("playable")) {
-                t1.add(function () { ele.play(); }, $(ele).data("playStart"));
-                t1.add(function () { ele.pause(); }, $(ele).data('playPause'));
-            }
-
-            if (ele.src === 'tki_movie2_x264_001.mp4') {
-                myDebugger.write("MP4 Data coming");
-                myDebugger.write(1, toOutVars);
+    buildAnimation(anidef) {
+        myDebugger.write(-1, "Building animation: " + anidef.name + " : " + anidef.tweens.length + " tweens to build");
+        
+        let tl = gsap.timeline({paused:true});
+        for (const twx of anidef.tweens) {
+                //if ($(twx.target)[0] instanceof HTMLAudioElement) {
+                    // handle this different
+                    // if (twx.from.volume && twx.from.volume > 0){
+                    //     tl.from(twx.target, twx.from[0],
+                    //         {onStart:function() { $(twx.target)[0].play()}}, 0);
+                    // }
+            myDebugger.write(-1, "building " + twx.target);
+            if (twx.from)
+                tl.from(twx.target, twx.from[0], 0);
+            if (twx.to) {
+                for (const twto of twx.to) {
+                    tl.to(twx.target, twto, ">");
+                } 
             }
         }
-        this.timeline.add(t1, '<');
+        myDebugger.write(-1, "built animations ");
+        return tl;
     }
-    return t1;
-}
 
+    /**********************************
+     * updateText
+     * finds the heading/title assumed to be h2
+     * changes the innerHTML
+     * finds and removes all but the last paragraph
+     * last paragraph is assumed to be ULEclear
+     * adds new paragraphs before the ULEclear paragraph
+     * if the paragraph is blank, add a blank placeholder
+     **********************************/
+    updateText(slide) {
+        myDebugger.write(-1, "Updating content");
+        try{
+            let contentElem = $(content_section)[0];
+            let headingElem = contentElem.querySelector('h2');
+            let paragraphs = contentElem.querySelectorAll('p');
+            let myId = paragraphs[0].id;
+            let myClass = paragraphs[0].className;
+            for (var i = 0; i < paragraphs.length - 1; i++) {
+                paragraphs[i].remove();
+            }
+
+            var newText = slide.content;
+            myDebugger.write(-1, "New content text: ");
+
+            headingElem.innerHTML = slide.slideTitle;
+
+            if (newText === "" || newText === undefined) {
+                var newP = document.createElement('p');
+                newP.classList.add(myClass);
+                contentElem.insertBefore(newP, contentElem.lastElementChild);
+            }
+            else {
+                for (var para of newText) {
+                    var newP = document.createElement('p');
+                    newP.classList.add(myClass);
+                    newP.innerHTML = para;
+                    contentElem.insertBefore(newP, contentElem.lastElementChild);
+                }
+            }
+        }
+        catch(e) {
+            myDebugger.write(-1, "$ERROR$ inserting content text for slide " + slide.slideNo);
+            myDebugger.write(-1, e.message);
+        }
+    }
 }
