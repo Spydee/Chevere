@@ -9,8 +9,7 @@
 		"slideNo": "1",
 		"slideTitle": "Slide 1: A Test of the Animations",
 		"animations": [
-		  "fromTheCloud",
-		  "textWarp"
+		  "fromTheCloud"
 		],
 		"media": [
 		  {
@@ -20,11 +19,10 @@
 			  "ht4f_aspect_ratio"
 			],
             "text": "ht4f1.png",
-			"set":{"x":0, "y":0, "alpha":0.5},
-			"style": "position:absolute;",
+			"style": "position:absolute;z-index:0",
 			"transition":{
 				"tranin":{"from":{"x":"0%", "alpha":1.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
-				"tranout":{"to": {"delay":4, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+				"tranout":{"to": {"delay":9, "x":"+=100%", "alpha":0.0, "duration":0.75}}
 			}
 		  },
 		  {
@@ -32,19 +30,31 @@
 			"classLst": [
 				"ht4f_image",
 				"ht4f_aspect_ratio",
-				"animation"
+				"animation",
+				"theCloud"
 			],
-			"set":{"position":"absolute","left":"50%","top":"10%","width":"25%","transform":"translateX(-150%)","z-index":7,"opacity":0},
-			"text": "Cloud.png"
+			
+			"text": "Cloud.png",
+			"style": "position:absolute;left:50%;top:10%;width:50%;transform:translateX(-150%);z-index:7;opacity:0.25",
+			"transition":{
+				"tranin":{"from":{}, "to": {}},
+				"tranout":{"to": {"delay":8, "x":"+=200%", "alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "img",
 			"classLst": [
-			  "theBolt",
-			  "animation"
+				"ht4f_image",
+				"ht4f_aspect_ratio",
+				"animation",
+				"theBolt"
 			],
 			"text": "LightningBolt.png",
-			"style": "position:absolute;left:50%;top:30%;width:12%;transform:translateX(-50%);z-index:5;opacity:0"
+			"style": "position:absolute;left:50%;top:50%;width:25%;aspect-ratio:1.0;transform:translateX(-50%);z-index:5;opacity:0.25",
+			"transition":{
+				"tranin":{"from":{}, "to": {}},
+				"tranout":{"to": {"delay":8, "x":"+=200%", "alpha":0.0, "duration":0.75}}
+			}
 		  },
 		  {
 			"tag": "audio",
@@ -127,7 +137,8 @@
 		"Hi! My name is Kayla, and I would like to show you some of the cool things Jeff and Dave have done with animation tutorials.",
      	"The rain and lightning intro is all done using animations! Each element can be controlled independently.",
         "The slide will fadeout and the next one will fade in."
-		]
+		],
+		"classList": ["ht4f_content"]
 	  },
 	  {
 		"slideNo": "2",
@@ -309,26 +320,13 @@
 			],
 			"text": "tki_movie2_x264_001.mp4",
 			"style": "position: absolute; width:50%; left:50%; top:43%; z-index:5;",
+			"transition":{
+				"tranin":{"from":{"x":"0%", "alpha":0.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":4, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+			},
 			"playTime": {
 				"playStart": 16.5,
 				"playPause" : 19
-			},
-			"transition": {
-			  "tranCss": {
-				"delay":0,
-				"opacity": 0,
-				"top": "\u002B=100%"
-			  },
-			  "tranIn": {
-				"opacity": 1.0,
-				"top": "-=100%"
-			  },
-			  "tranOut": {
-				"delay":22000,
-				"duration": 11.5,
-				"opacity": 0.0,
-				"left": "-100%"
-			  }
 			}
 		  }
 		],
@@ -393,11 +391,9 @@
 			"text": "dancing-banana.gif",
 			"style": "position: absolute; left:57.5%; top:60%; width: 25%; z-index:5;",
 			"delay": 6500,
-			"transition": {
-			  "tranOut": {
-				"opacity": 0.0,
-				"top": "-=100%"
-			  }
+			"transition":{
+				"tranin":{"from":{"x":"0%", "alpha":0.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":4, "x":"+=100%", "alpha":0.0, "duration":0.75}}
 			}
 		  }
 		],

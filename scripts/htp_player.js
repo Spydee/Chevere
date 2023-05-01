@@ -11,6 +11,7 @@ $(document).ready(function () {
     content_section = "#ht4f_content_text";
     myDebugger = new debugWriter();
     debugMask = 5;
+    debugFilter = [" "];
 	defaultDebugMode = 4;
     myDebugger.write(-1, "Debug initialized");
     myPlayer = null;
@@ -98,7 +99,6 @@ $(document).ready(function () {
 
         let myController = new controller();
         myController.init();
-		
     }
 });
 
@@ -106,6 +106,15 @@ let debugWriteEnable = true;
 class debugWriter{
 
 	constructor() {
+        this.debugDiv = $('#debug');
+        this.filterBox = document.getElementById('#debugFilter');
+        if (this.filterBox) {
+            this.filterBox.innerHTML = "Hello";
+            this.log = [];
+        }
+        else {
+            
+        }
 	}
 		
 	write(mode, message) {
@@ -116,8 +125,11 @@ class debugWriter{
 			// mode = 3 use alert AND console
 			// mode = 4: use debug html Area
 		if (debugWriteEnable === false)
-        return;
-            if (mode === -1)
+            return;
+
+        this.log.push(message);
+
+        if (mode === -1)
 			mode = defaultDebugMode; // global
 		mode &= debugMask;
 		switch (mode) {
@@ -133,20 +145,55 @@ class debugWriter{
 			default: break;
 		}
 	}
+
     writeHTML(message) {
-        const debugDiv = $('#debug');
-        if (debugDiv) {
+        if (this.debugDiv) {
             var newP = document.createElement("p");
             //debugSec.children('p')[0].innerHTML += message;
-            newP.innerHTML = message;
-            debugDiv[0].appendChild(newP);
+            if (debugFilter) {
+                for (const filter of debugFilter) {
+                    if (!message.includes(filter)) {
+                        message = ""; //+= " does not include " + filter;
+                    }
+                }
+
+                if (message != "") {
+                    newP.innerHTML = message;
+                    this.debugDiv[0].appendChild(newP);
+                }
+            }
         }
-
-
     }
 
-}
+    clearDebug() {
+        myDebugger.write(-1, "Clearing ");
+        try{
+            let contentElem = this.filterBox.innerHTML;
+            let paragraphs = contentElem.querySelectorAll('p');
+            let myClass = paragraphs[0].className;
+            for (var i = 0; i < paragraphs.length - 1; i++) {
+                paragraphs[i].remove();
+            }
+        }
+        catch(e) {
 
+            alert(e.message + " in clearDebug");
+        }
+    }
+
+    setAndApplyFilter() {
+        var filter = this.filterBox.innerHTML;
+        debugFilter = filter;
+        this.clearDebug();
+   //        var string = (this.debugDiv[0].innerHTML);
+        var newStrArr = "";
+        var oldStrArr = string.match(/\<p\b[\s\S]+?\<\/p\>/g);
+        for (msg in oldStrArr) {
+            if (msg.includes(filter))
+                newStr.push(msg);
+        }
+    }
+}
 
 /***********************************************
  Player object
@@ -185,6 +232,7 @@ class player {
         searchPath = [jsondata.assetPath, jsondata.altPath, "."];
         // set up global settings
         this.loadTimeLines();
+
     }
 
     // called from init() and rewind()
@@ -207,6 +255,7 @@ class player {
             myDebugger.write(-1, "Label is " + "slide_" + slide.slideNo);
             console.log(tili);
         }
+        tili.updateText(jsondata.slides[0]);
         masterTimeline.seek(0.75);
     }
 
