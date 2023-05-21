@@ -23,6 +23,7 @@ class player
         connect player to controls
         preload files?
         loadTimelines
+        get the size of the container and store it?
 
     loadTimeLines
         for each slide, create a time line and add to masterGainNode

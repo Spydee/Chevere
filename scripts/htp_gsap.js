@@ -1,9 +1,10 @@
 class slideTimeline {
-    constructor(slide) {
+    constructor(slide, jsondata, gsapDefinitions) {
         this.slide = slide;
         this.timeline = gsap.timeline({paused:true});
         this.elems = [];
-        myDebugger.write(-1, "constructing");
+        this.jsondata = jsondata;
+//        myDebugger.log("constructing");
     }
 
     createTimeline() {
@@ -18,40 +19,50 @@ class slideTimeline {
         // create a transition timeline for all elements that have a transition
         // create an animation timeline for all should not be transition for audio - use
 
-        myDebugger.write(-1, "Starting preload " + this.slide.media.length + " elements for slide " + this.slide.slideNo);
+        myDebugger.log("Starting preload " + this.slide.media.length + " elements for slide " + this.slide.slideNo);
         var boxSize = this.getContainerSize($(media_div)[0]);
-        myDebugger.write(-1, "Container is " + boxSize.w + " x " + boxSize.h);
+        myDebugger.log("Container is " + boxSize.w + " x " + boxSize.h);
 
         this.tranTimeline = gsap.timeline({paused:true});
         /************ First create the transitions ******************/
-        for (const m of this.slide.media) {
-//            if ( (!m.text.includes("ht4f")) && (!m.text.includes("oud") ) && (!m.text.includes("olt") ) )
-  //              continue;
-            myDebugger.write(-1, "creating " + m.tag + ": " + m.text);
-            var elem = this.createMedia(m);
-            myDebugger.write(-1, "add props");
-            this.addProperties(m, elem);
-            myDebugger.write(-1, "add transitions: " + m.text);
-            this.addTransitions(m, elem);
+        myDebugger.setMode(4);
+        try {
+            myDebugger.log("There are " + this.slide.media.length + " media ")
+            for (const m of this.slide.media) {
+    //            if ( (!m.text.includes("ht4f")) && (!m.text.includes("oud") ) && (!m.text.includes("olt") ) )
+    //              continue;
+                myDebugger.log("creating " + m.tag + ": " + m.text);
+                var elem = this.createMedia(m);
+                myDebugger.log("add props");
+                this.addProperties(m, elem);
+                myDebugger.log("add transitions: " + m.text);
+                this.addTransitions(m, elem);
 
-            myDebugger.write(-1, "push and append");
-            this.elems.push(elem);
-            $(media_div)[0].appendChild(elem);
+                myDebugger.log("push and append");
+                this.elems.push(elem);
+                $(media_div)[0].appendChild(elem);
+            }
+            myDebugger.log("media and transitions created");
         }
-        myDebugger.write(-1, "media and transitions created");
+        catch(e) {
+            myDebugger.setMode(4);
+            myDebugger.log("failed to create timeline: " + e.message);
+            myDebugger.restoreMode();
+        }
         this.animationTimeline = gsap.timeline({paused:true});
-        this.createAnimation(this.slide);
+    //    this.createAnimation(this.slide);
 
-        myDebugger.write(-1, "adding timelines");
+        myDebugger.log("adding timelines");
         try {
 //            this.tranTimeline.eventCallback("onComplete", updateText, ["slide"]);
             this.timeline.add(this.tranTimeline, '<');
-            this.timeline.add(this.animationTimeline, '<');
+            myDebugger.log("GSAP slide timeline duration is " + this.tranTimeline.duration());
+            //       this.timeline.add(this.animationTimeline, '<');
         }
         catch(e)
-            {myDebugger.write(-1, "$ERROR$: " + e.message)};
+            {myDebuggerlog("$ERROR$: " + e.message)};
 
-        myDebugger.write(-1, "done with slide " + this.slide.slideNo);
+        myDebugger.log("done with slide " + this.slide.slideNo);
         return this.timeline;
     }
 
@@ -86,7 +97,7 @@ class slideTimeline {
         } // end switch
 
         if ((m.text) && (m.text.length > 0)) {
-            ele.src = jsondata.assetPath + m.text;
+            ele.src = this.jsondata.assetPath + m.text;
         }
 
         if (m.content) {
@@ -105,21 +116,21 @@ class slideTimeline {
                 ele.classList.add(cc);
                 classes += " " + cc;
             }
-            myDebugger.write(-1, classes);
+            myDebugger.log(classes);
         }
 
         if (m.style) {
             ele.setAttribute("style", m.style);
-            myDebugger.write(-1, "Setting styles = " + m.style);
+            myDebugger.log("Setting styles = " + m.style);
         }
 
         if (m.innerHTML) {
             ele.innerHTML = m.innerHTML;
-            myDebugger.write(-1, "Adding innerHTML");
+            myDebugger.log("Adding innerHTML");
         }
 
         if (m.set) {
-            myDebugger.write("setting ..");
+            myDebugger.log("setting ..");
             $(ele).data('set', m.set );
 //              gsap.set(ele, {x:0, y:0, scaleX:"80%", alpha:0});
         }
@@ -142,11 +153,13 @@ class slideTimeline {
             //$(ele).data('tranout', m.transition.tranOut);
             this.tranTimeline.fromTo(ele, m.transition.tranin.from, m.transition.tranin.to, 0);
 
-            myDebugger.write(-1, "transition is " + m.transition);
+//            myDebugger.log("transition in duration is " + m.transition.tranin.to.duration);
             this.tranTimeline.to(ele, m.transition.tranout.to, '>');
+//            myDebugger.log("transition out duration is " + m.transition.tranout.to.duration);
+//            myDebugger.log("GSAP duration is " + this.tranTimeline.duration());
         }
         else {
-            myDebugger.write(-1, "no transition");
+            myDebugger.log("no transition");
         }
 
     }
@@ -160,25 +173,25 @@ class slideTimeline {
     }
 
     createAnimation(slide) {
-        myDebugger.write(-1, "creating animation timeline");
+        myDebugger.log("creating animation timeline");
         for (const animName of slide.animations) {
-            myDebugger.write(-1, "Searching ...");
+            myDebugger.log("Searching ...");
 
             let gsapDef;
             try {
                 gsapDef = gsapDefinitions.animations.find(this.findAnimation, animName);
                 console.log(gsapDef);
                 if (gsapDef){
-                    myDebugger.write(-1, "animation found: ", animName);
+                    myDebugger.log("animation found: ", animName);
                   //  var mygsap = new gsapAnimation(gsapDef);
                     this.animationTimeline.add(this.buildAnimation(gsapDef));
                 }
                 else {
-                    myDebugger.write(-1, "No animations found for slide " + slide.slideNo);
+                    myDebugger.log("No animations found for slide " + slide.slideNo);
                 }
             }
             catch (e) {
-                myDebugger.write(-1, "Error adding " + gsapDef + " to animations");
+                myDebugger.log("Error adding " + gsapDef + " to animations");
             }
 
 
@@ -193,7 +206,7 @@ class slideTimeline {
     }
 
     buildAnimation(anidef) {
-        myDebugger.write(-1, "Building animation: " + anidef.name + " : " + anidef.tweens.length + " tweens to build");
+        myDebugger.log("Building animation: " + anidef.name + " : " + anidef.tweens.length + " tweens to build");
         
         let tl = gsap.timeline({paused:true});
         for (const twx of anidef.tweens) {
@@ -203,7 +216,7 @@ class slideTimeline {
                     //     tl.from(twx.target, twx.from[0],
                     //         {onStart:function() { $(twx.target)[0].play()}}, 0);
                     // }
-            myDebugger.write(-1, "building " + twx.target);
+            myDebugger.log("building " + twx.target);
             if (twx.from)
                 tl.from(twx.target, twx.from[0], 0);
             if (twx.to) {
@@ -212,7 +225,7 @@ class slideTimeline {
                 } 
             }
         }
-        myDebugger.write(-1, "built animations ");
+        myDebugger.log("built animations ");
         return tl;
     }
 
@@ -226,7 +239,7 @@ class slideTimeline {
      * if the paragraph is blank, add a blank placeholder
      **********************************/
     updateText(slide) {
-        myDebugger.write(-1, "Updating content");
+        myDebugger.log("Updating content");
         try{
             let contentElem = $(content_section)[0];
             let headingElem = contentElem.querySelector('h2');
@@ -238,7 +251,7 @@ class slideTimeline {
             }
 
             var newText = slide.content;
-            myDebugger.write(-1, "New content text: ");
+            myDebugger.log("New content text: ");
 
             headingElem.innerHTML = slide.slideTitle;
 
@@ -257,8 +270,8 @@ class slideTimeline {
             }
         }
         catch(e) {
-            myDebugger.write(-1, "$ERROR$ inserting content text for slide " + slide.slideNo);
-            myDebugger.write(-1, e.message);
+            myDebugger.log("$ERROR$ inserting content text for slide " + slide.slideNo);
+            myDebugger.log(e.message);
         }
     }
 }
