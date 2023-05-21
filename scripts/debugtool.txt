@@ -1,0 +1,76 @@
+This describes the debug tool
+
+Class: debugLogger
+constructor 
+    param 1 : selector for the output
+    param 2 : filter selector
+
+properties
+    logData
+    logFiltered
+    mode        static
+         0 means disabled, 
+         1 means console.log, 
+         2 means alert, 
+         3 means alert and console, 
+         4 means log to html
+         -1 (when passed in as parameter)
+    prev_mode   static - stores the last defined mode
+
+    debugDiv
+    filterDiv
+
+    filterTxt
+
+methods
+    
+    setMode(mode)
+    restoreMode()
+    log(message)
+    clearLog()
+    filter()
+    
+
+Buttons:
+    log
+    clear
+
+Textboxes
+    logDiv
+    filterDiv
+
+descriptions
+constructor(logSelector, filterSelector)
+    document.querySelector(logSelector)
+    document.querySelector(filterSelector)
+    mode = 0;
+    prevMode = mode;
+    logData = [];
+    filterTxt = "";
+
+setMode(mode)
+    if -1, no change
+    else
+        this.prevMode = this.mode;
+        this.mode = mode;
+
+restoreMode()
+    var m = this.mode;
+    this.mode = this.prevMode;
+    this.prevMode = m;
+
+log(message)
+    this.logData.push(message)
+
+    if (this.filterDiv)
+        myFilter = filterDiv.innerHTML
+    if (myFilter)
+        this.logFiltered = this.filter(myFilter)
+    else
+        this.logFiltered = this.log
+
+     
+filter(msg)
+    if (msg contains filterTxt)
+
+filterAll(logData)

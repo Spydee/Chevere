@@ -1,0 +1,35 @@
+This shows the flow and location of the code
+
+htp_player.js
+document.ready
+   define global variables
+
+   define startup function
+      call load json
+      call load animations
+      wait for them
+      create menu/controls
+      
+      create player
+      call init
+      create controller
+      call init
+
+class player 
+    constructor
+        just initialize variables
+
+    init
+        connect player to controls
+        preload files?
+        loadTimelines
+
+    loadTimeLines
+        for each slide, create a time line and add to masterGainNode
+
+
+class slideTimeline
+    constructor
+        just init
+
+    create transitions
