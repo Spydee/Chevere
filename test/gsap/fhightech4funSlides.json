@@ -1,0 +1,603 @@
+{
+	"title": "A Slide Show Test File",
+	"version": "0.3",
+	"assetPath": "media/",
+	"altPath": "animations/",
+	"defaultImage": "",
+	"slides": [
+	  {
+		"slideNo": "slide1",
+		"slideTitle": "Slide 1: A Test of the Animations",
+		"animations": [
+        "fromTheCloud"
+		],
+ 		"transition":{
+	    "tranin":{"from":{"x":"0%", "alpha":1.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
+	    "tranout":{"to": {"delay":9, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+		},
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_image",
+			  "ht4f_aspect_ratio"
+			],
+            "text": "ht4f1.png",
+			"style": "position:absolute;z-index:0",
+		  },
+		  {
+			"tag": "img",
+			"classLst": [
+				"ht4f_image",
+				"ht4f_aspect_ratio",
+				"animation",
+				"theCloud"
+			],
+			
+			"text": "Cloud.png",
+			"style": "position:absolute;left:50%;top:10%;width:50%;transform:translateX(-150%);z-index:7;opacity:0.25",
+			"transition":{
+				"tranin":{"from":{}, "to": {}},
+				"tranout":{"to": {"delay":8, "x":"+=200%", "alpha":0.0, "duration":0.75}}
+			}
+		  },
+		  {
+			"tag": "img",
+			"classLst": [
+				"ht4f_image",
+				"ht4f_aspect_ratio",
+				"animation",
+				"theBolt"
+			],
+			"text": "LightningBolt.png",
+			"style": "position:absolute;left:50%;top:50%;width:25%;aspect-ratio:1.0;transform:translateX(-50%);z-index:5;opacity:0.25",
+			"transition":{
+				"tranin":{"from":{}, "to": {}},
+				"tranout":{"to": {"delay":8, "x":"+=200%", "alpha":0.0, "duration":0.75}}
+			}
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "windRain",
+			  "animation"
+			],
+			"text": "WindThunderRain_96.mp3",
+			"delay": 150,
+			"duration": 8500,
+			"volume":0.9
+		  },
+		  {
+			"tag": "div",
+			"classLst": [
+			  "ht4f_div",
+			  "animation",
+			  "darken"
+			],
+			"text": "",
+			"style": "position:absolute;left:0%;top:0%;height:100%;width:100%;background:#666;z-index:4;opacity:0.0"
+		  },
+		  {
+			"tag": "ul",
+			"classLst": [
+			  "rainText",
+			  "animation"
+			],
+			"text": "",
+			"style": "top:50%;",
+			"innerHTML": "\u003Cli\u003EB\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003El\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003Ev\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E"
+		  },
+		  {
+			"tag": "ul",
+			"classLst": [
+			  "rainText",
+			  "animation"
+			],
+			"text": "",
+			"style": "top:60%;",
+			"innerHTML": "\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Ed\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003EY\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E\u003Cli\u003Eu\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003EW\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003El\u003C/li\u003E\u003Cli\u003El\u003C/li\u003E"
+		  },
+		  {
+			"tag": "ul",
+			"classLst": [
+			  "rainText",
+			  "animation"
+			],
+			"text": "",
+			"style": "top:70%;",
+			"innerHTML": "\u003Cli\u003ES\u003C/li\u003E\u003Cli\u003Eu\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003Ed\u003C/li\u003E"
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "Greensleeves_96.mp3",
+			"delay": 7200,
+			"offsetTime": 700,
+			"duration": -1,
+			"volume":0.4
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "narration"
+			],
+			"text": "Kayla_Slide1_96.mp3",
+			"delay": 7200,
+			"offsetTime": 0,
+			"duration": 18500,
+			"volume":0.9
+		  }
+		],
+		"content": [
+		"Hi! My name is Kayla, and I would like to show you some of the cool things Jeff and Dave have done with animation tutorials.",
+     	"The rain and lightning intro is all done using animations! Each element can be controlled independently.",
+        "The slide will fadeout and the next one will fade in."
+		],
+		"classList": ["ht4f_content"]
+	  },
+	  {
+		"slideNo": "slide2",
+		"slideTitle": "Slide 2: Animating and Highlighting Text",
+		"animations": [
+		  "highlightDiv",
+		  "arrowLeft",
+		  "arrowLeft2",
+		  "flyingText"
+		],
+		"transition":{
+			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+			"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+		},
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_image",
+			  "ht4f_aspect_ratio"
+			],
+			"text": "ht4f2.png",
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			},
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "Greensleeves_96.mp3",
+			"delay": -1,
+			"offsetTime": 19400,
+			"duration": -1,
+			"volume":0.4
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio"
+			],
+			"text": "Kayla_Slide2_96.mp3",
+			"delay": 3000,
+			"offsetTime": 0,
+			"duration": 16000,
+			"volume":0.9
+		  },
+		  {
+			"tag": "div",
+			"classLst": [
+			  "ht4f_div",
+			  "animation",
+			  "divHighlight"
+			],
+			"text": "",
+			"style": "position:absolute;left:5%;top:15%;height:17%;width:39%;background:yellow;border:2px solid blue;z-index:9;opacity:0.0"
+		  },
+		  {
+			"tag": "div",
+			"classLst": [
+			  "ht4f_div",
+			  "animation",
+			  "arrowLeft1"
+			],
+			"text": "",
+			"style": "position:absolute; left:70%; top:15%; height:50px;width:130px;background:blue;   z-index:5;opacity:0.0;clip-path:               polygon(0% 50%, 40% 0%, 40% 30%, 100% 30%, 100% 70%, 40% 70%, 40% 100%, 0% 50%)"
+		  },
+		  {
+			"tag": "div",
+			"classLst": [
+			  "ht4f_div",
+			  "animation",
+			  "arrowLeft2"
+			],
+			"text": "",
+			"style": "position:absolute; left:70%; top:15%; width:20%; z-index:6;opacity:0.0;",
+			"innerHTML": "\u003Csvg viewbox=\u00270 0 200 100\u0027\u003E \u003Cpolygon points=\u00270,50 40,0 40,30 200,30 200,70 40,70 40,100 0,50\u0027 style=\u0027fill:lime\u0027/\u003E\u003C/svg\u003E"
+		  },
+		  {
+			"tag": "ul",
+			"classLst": [
+			  "animation",
+			  "flyinText"
+			],
+			"text": "",
+			"style": "position:absolute;left:50%;top:42%;color:green;font-size:1.5em;transform:translateX(-50%);list-style:none;display:inline-flex",
+			"delay": 4000,
+			"duration": 3000,
+			"innerHTML": "\u003Cli\u003ET\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Es\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Eb\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Eg\u003C/li\u003E\u003Cli\u003Ey\u003C/li\u003E"
+		  },
+		  {
+			"tag": "ul",
+			"classLst": [
+			  "animation",
+			  "flyinText2"
+			],
+			"text": "",
+			"style": "position:absolute;left:50%;top:50%;color:blue;font-size:2em;transform:translateX(-50%);list-style:none;display:inline-flex",
+			"delay": 5000,
+			"duration": 3000,
+			"innerHTML": "\u003Cli\u003ET\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Es\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Eb\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Eg\u003C/li\u003E\u003Cli\u003Ey\u003C/li\u003E\u003Cli\u003E,\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E"
+		  }
+		],
+		"content": [
+		"Text can be animated in fast, or slow.",
+		"Typical of slide presentations the text on the left side shows bullet points.",
+		"The bullet points can be emphasized using an arrow animation or, you can highlight them."		]
+	  },
+	  {
+		"slideNo": "slide3",
+		"slideTitle": "Slide 3: Animating Video",
+		"animations": [
+		  "arrowRight"
+		],
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_image",
+			  "ht4f_aspect_ratio"
+			],
+			"text": "ht4f3.png",
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.5}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2, "x":"+=100", "alpha":0.0, "duration":0.75}}
+			}
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "Greensleeves_96.mp3",
+			"delay": -1,
+			"offsetTime": 38400,
+			"duration": 25000,
+			"volume":0.4			
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio"
+			],
+			"text": "Andrew_Slide3_96.mp3",
+			"delay": 5,
+			"offsetTime": 0,
+			"duration": 26500,
+			"volume":0.9
+		  },
+		  {
+			"tag": "div",
+			"classLst": [
+			  "ht4f_div",
+			  "animation"
+			],
+			"text": "",
+			"style": "position:absolute;left:10%;top:110%;height:10%;width:30%;background:#F4F4F4;color:#000;z-index:5;opacity:0.0;"
+		  },
+		  {
+			"tag": "div",
+			"classLst": [
+			  "ht4f_div",
+			  "animation",
+			  "arrowRight1"
+			],
+			"text": "",
+			"style": "position:absolute; left:10%; top:75%; width:10%; z-index:6;opacity:0.0;",
+			"innerHTML": "\u003Csvg viewbox=\u00270 0 100 100\u0027\u003E \u003Cpolygon points=\u0027100,50 60,0 60,20 0,20 0,80 60,80 60,100 100,50\u0027 style=\u0027fill:lime\u0027/\u003E\u003C/svg\u003E"
+		  },
+		  {
+			"tag": "video",
+			"classLst": [
+			  "ht4f_div",
+			  "ht4f_video"
+			],
+			"text": "tki_movie2_x264_001.mp4",
+			"style": "position: absolute; width:50%; left:50%; top:43%; z-index:5;",
+			"transition":{
+				"tranin":{"from":{"x":"0%", "alpha":0.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":4, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+			},
+			"playTime": {
+				"playStart": 16.5,
+				"playPause" : 19
+			}
+		  }
+		],
+		"content": [
+        "Hello! I am Andrew. This slide shows off something quite cool! This is an image of the measurement of a finger on a touch sensor.",
+        "Video can be set to start at a specified time. The video will start, now!",
+        "You can also specify the duration. The video will end, now!",
+        "The video transition out is independent of the slide."
+		]
+	  },
+	  {
+		"slideNo": "4",
+		"slideTitle": "Slide 4: Animated Media",
+		"animations": [
+		  "textWarp"
+		],
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_image",
+			  "ht4f_aspect_ratio"
+			],
+			"text": "ht4f4.png",
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.1}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "CaptainJack_96.mp3",
+			"delay": 5,
+			"offsetTime": 0,
+			"duration": -1,
+			"volume":0.5			
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio"
+			],
+			"text": "Andrew_Slide4_96.mp3",
+			"delay": 5,
+			"offsetTime": 0,
+			"duration": 27000,
+			"volume":0.9			
+		  },
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_image",
+			  "ht4f_aspect_ratio",
+			  "animation"
+			],
+			"text": "dancing-banana.gif",
+			"style": "position: absolute; left:57.5%; top:60%; width: 25%; z-index:5;",
+			"delay": 6500,
+			"transition":{
+				"tranin":{"from":{"x":"0%", "alpha":0.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":4, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+			}
+		  }
+		],
+		"content": [
+        "You can convert a video or image into an animation to show movement!",
+        "This makes images come to life.",
+        "Many host sites limit your space on the server.",
+        "You may be able to save space by using animated GIF and PNG files. ",
+        "Because of this, it is easy to reduce the problems associated with video buffering.",
+        "The background music will drop in volume for the next slide."		
+		]
+	  },
+	  {
+		"slideNo": "5",
+		"slideTitle": "Slide 5: Unlimited Transitions",
+		"animations": [],
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_div",
+			  "ht4f_image",
+			  "ht4f_aspect_ratio"
+			],
+			"text": "ht4f5.png",
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
+ 		 },
+		 {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "CaptainJack_96.mp3",
+			"delay": -1,
+			"offsetTime": 27000,
+			"duration": -1,
+			"volume":0.1
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio"
+			],
+			"text": "Andrew_Slide5_96.mp3",
+			"delay": 5,
+			"offsetTime": 0,
+			"duration": 5000,
+			"volume":0.9			
+		  }
+		],
+		"content": [
+        "You can make the slide transition whatever you want!",
+        "Swipe up!"
+		]
+	  },
+	  {
+		"slideNo": "6",
+		"slideTitle": "Slide 6: Unlimited Transitions",
+		"animations": [],
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+			  "ht4f_image",
+			  "ht4f_aspect_ratio"
+			],
+			"text": "ht4f6.png",
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"y":"-100%", "alpha":0}, "to": {"y":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio"
+			],
+			"text": "Andrew_Slide6_96.mp3",
+			"delay": 0,
+			"duration": 1900,
+			"volume":0.9
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "CaptainJack_96.mp3",
+			"delay": -1,
+			"offsetTime": 32000,
+			"duration": -1,
+			"volume":0.25			
+		  }
+		],
+		"content": [
+		  "Swipe Down"
+		]
+	  },
+	  {
+		"slideNo": "7",
+		"slideTitle": "Slide 7: Unlimited Transitions",
+		"animations": [],
+		"media": [
+		  {
+			"tag": "img",
+			"classLst": [
+            "ht4f_div",
+            "ht4f_image",
+            "ht4f_aspect_ratio"
+			],
+			"text": "ht4f7.png",
+			"set":{"x":0, "y":0, "alpha":0},
+			"style": "position:absolute;",
+			"transition":{
+				"tranin":{"from":{"x":"-100%", "alpha":0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+			}
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "background"
+			],
+			"text": "CaptainJack_96.mp3",
+			"delay": -1,
+			"offsetTime": 36000,
+			"duration": -1,
+			"volume":0.3			
+		  },
+		  {
+			"tag": "audio",
+			"classLst": [
+			  "ht4f_audio",
+			  "windRain"
+			],
+			"text": "Andrew_Slide7_96.mp3",
+			"delay": 5,
+			"duration": 3500,
+			"volume":0.9
+		  }
+		],
+		"content": [
+		  "You can grow and come in from the top left!"
+		]
+	  },
+	  {
+      "slideNo": "8",
+      "slideTitle": "Slide 8: Unlimited Transitions",
+      "animations": [],
+      "media": [
+        {
+          "mediaName": "pptBackground",
+          "tag": "img",
+          "classLst": [
+            "ht4f_div",
+            "ht4f_image",
+            "ht4f_aspect_ratio"
+          ],
+          "text": "ht4f8.png",
+		  "set":{"x":0, "y":0, "alpha":0},
+		  "style": "position:absolute;",
+		  "transition":{
+			  "tranin":{"from":{"x":"-100%", "alpha":0.5}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+			  "tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+		  }
+	  }
+      ],
+      "content": []
+    },
+    {
+      "slideNo": "9",
+      "slideTitle": "Slide 9: The End",
+      "animations": [],
+      "media": [
+        {
+          "mediaName": "pptBackground",
+          "tag": "img",
+          "classLst": [
+            "ht4f_image",
+            "ht4f_aspect_ratio"
+          ],
+          "text": "ht4f9.png",
+		  "set":{"x":0, "y":0, "alpha":0},
+		  "style": "position:absolute;",
+		  "transition":{
+			  "tranin":{"from":{"y":"-100%", "x":"-=100%", "alpha":0.5}, "to": {"x":"0%", "y":"0%", "alpha":1.0, "duration":0.75}},
+			  "tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
+		  }
+        }
+      ],
+      "content": [
+        "That is all, folks!",
+        "Thanks for watching."
+      ]
+    }
+	]
+  }
