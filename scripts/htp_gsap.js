@@ -1,10 +1,10 @@
 class slideTimeline {
-    constructor(slide, jsondata, gsapDefinitions) {
+    constructor(slide, jsondata, gsapDefinitions, media_div) {
         this.slide = slide;
         this.timeline = gsap.timeline({paused:true});
         this.elems = [];
         this.jsondata = jsondata;
-//        myDebugger.log("constructing");
+        this.media_div = media_div;
     }
 
     createTimeline() {
@@ -19,149 +19,102 @@ class slideTimeline {
         // create a transition timeline for all elements that have a transition
         // create an animation timeline for all should not be transition for audio - use
 
-        myDebugger.log("Starting preload " + this.slide.media.length + " elements for slide " + this.slide.slideNo);
-        var boxSize = this.getContainerSize($(media_div)[0]);
-        myDebugger.log("Container is " + boxSize.w + " x " + boxSize.h);
+		this.timeline = gsap.timeline();
+		this.slidetraninTarget = "." + this.slide.slideNo + ":not(.animation)";
+		this.slidetranoutTarget = "." + this.slide.slideNo;
+		this.mySlideElements = this.buildSlide(this.slide, $(this.media_div)[0], this.jsondata.assetPath);
+        this.timeline.fromTo(this.slidetraninTarget, this.slide.transition.tranin.from, this.slide.transition.tranin.to);
+        this.timeline.addLabel(this.slide.slideNo);
+		this.timeline.to(this.slidetranoutTarget, {"delay":4, "left":"+=100%", "opacity":0 } , ">");
 
-        this.tranTimeline = gsap.timeline({paused:true});
-        /************ First create the transitions ******************/
-        myDebugger.setMode(4);
-        try {
-            myDebugger.log("There are " + this.slide.media.length + " media ")
-            for (const m of this.slide.media) {
-    //            if ( (!m.text.includes("ht4f")) && (!m.text.includes("oud") ) && (!m.text.includes("olt") ) )
-    //              continue;
-                myDebugger.log("creating " + m.tag + ": " + m.text);
-                var elem = this.createMedia(m);
-                myDebugger.log("add props");
-                this.addProperties(m, elem);
-                myDebugger.log("add transitions: " + m.text);
-                this.addTransitions(m, elem);
-
-                myDebugger.log("push and append");
-                this.elems.push(elem);
-                $(media_div)[0].appendChild(elem);
-            }
-            myDebugger.log("media and transitions created");
-        }
-        catch(e) {
-            myDebugger.setMode(4);
-            myDebugger.log("failed to create timeline: " + e.message);
-            myDebugger.restoreMode();
-        }
-        this.animationTimeline = gsap.timeline({paused:true});
-    //    this.createAnimation(this.slide);
-
-        myDebugger.log("adding timelines");
-        try {
-//            this.tranTimeline.eventCallback("onComplete", updateText, ["slide"]);
-            this.timeline.add(this.tranTimeline, '<');
-            myDebugger.log("GSAP slide timeline duration is " + this.tranTimeline.duration());
-            //       this.timeline.add(this.animationTimeline, '<');
-        }
-        catch(e)
-            {myDebuggerlog("$ERROR$: " + e.message)};
-
-        myDebugger.log("done with slide " + this.slide.slideNo);
         return this.timeline;
     }
 
-    createMedia(m) {
-        var ele = document.createElement(m.tag);
+    	// function buildElements
+	// takes the json file and creates DOM elements
+	// each DOM element has properties saved
+	// slide is the json definition for one slide
+	// parent is the DOM element parent
+	// mediapath is the global location for the media
+	buildSlide(slide, parentElem, mediaPath) {
+		for (const m of slide.media) {
+	        var ele = document.createElement(m.tag);
+			switch (m.tag) {
+				case 'img':
+					$(ele).data('viewable', 1);
+					//                    $(ele).data('audible', 0);
+					//                  $(ele).data('playable', 0);
+					break;
+				case 'audio':
+					//                $(ele).data('viewable', 0);
+					$(ele).data('audible', 1);
+					$(ele).data('playable', 1);
+					break;
+				case 'video':
+					$(ele).data('viewable', 1);
+					$(ele).data('audible', 1);
+					$(ele).data('playable', 1);
+					break;
+				case 'div':
+					$(ele).data('viewable', 1);
+					//            $(ele).data('audible', 0);
+					//          $(ele).data('playable', 0);
+					break;
+				default: // ul, li, 
+					$(ele).data('viewable', 1);
+					$(ele).data('audible', 0);
+					$(ele).data('playable', 0);
+			} // end switch
+			
+		// add properties
+			if ((m.text) && (m.text.length > 0)) {
+				ele.src = mediaPath + m.text;
+			}
 
-        switch (m.tag) {
-            case 'img':
-                $(ele).data('viewable', 1);
-                //                    $(ele).data('audible', 0);
-                //                  $(ele).data('playable', 0);
-                break;
-            case 'audio':
-                //                $(ele).data('viewable', 0);
-                $(ele).data('audible', 1);
-                $(ele).data('playable', 1);
-                break;
-            case 'video':
-                $(ele).data('viewable', 1);
-                $(ele).data('audible', 1);
-                $(ele).data('playable', 1);
-                break;
-            case 'div':
-                $(ele).data('viewable', 1);
-                //            $(ele).data('audible', 0);
-                //          $(ele).data('playable', 0);
-                break;
-            default: // ul, li, 
-                $(ele).data('viewable', 1);
-                $(ele).data('audible', 0);
-                $(ele).data('playable', 0);
-        } // end switch
+			if (m.classLst) {
+				if (!m.classLst.includes(slide.slideNo) && !(m.tag === "audio" && m.duration < 0) )
+					m.classLst.push(slide.slideNo);
+//				if ( m.classLst.includes(slide.slideNo) || !(m.classLst.includes("animation") ) ) {
+//					if ( !(m.tag === "audio" && m.duration < 0) )
+//				}
 
-        if ((m.text) && (m.text.length > 0)) {
-            ele.src = this.jsondata.assetPath + m.text;
-        }
+				for (const cc of m.classLst) {
+					ele.classList.add(cc);
+				}
+				console.log(m.text + " classes: " + m.classLst);
+			}
 
-        if (m.content) {
-            $(ele).data('content', m.content);
-        }
-            // find a way to make sure we don't load more than one background
-            // only permit background to extend beyond the slide
-            // when prev and next are pressed, make sure we take into account the time for the audio
-        return ele;
-    }
+			if (m.style) {
+				ele.setAttribute("style", m.style);
+			}
 
-    addProperties(m, ele) {
-        if (m.classLst) {
-            let classes = "Setting classList = ";
-            for (const cc of m.classLst) {
-                ele.classList.add(cc);
-                classes += " " + cc;
-            }
-            myDebugger.log(classes);
-        }
+			if (m.innerHTML) {
+				ele.innerHTML = m.innerHTML;
+			}
 
-        if (m.style) {
-            ele.setAttribute("style", m.style);
-            myDebugger.log("Setting styles = " + m.style);
-        }
+			if (m.set) {
+				$(ele).data('set', m.set );
+				//      gsap.set(ele, {x:0, y:0, scaleX:"80%", alpha:0});
+			}
 
-        if (m.innerHTML) {
-            ele.innerHTML = m.innerHTML;
-            myDebugger.log("Adding innerHTML");
-        }
+			if (m.duration) {
+				$(ele).data('duration', m.duration);
+			}
+			if (m.delay) {
+				$(ele).data('delay', m.delay);
+			}
 
-        if (m.set) {
-            myDebugger.log("setting ..");
-            $(ele).data('set', m.set );
-//              gsap.set(ele, {x:0, y:0, scaleX:"80%", alpha:0});
-        }
-
-        if (m.duration) {
-            $(ele).data('duration', m.duration);
-        }
-        if (m.delay) {
-            $(ele).data('delay', m.delay);
-        }
-
-        if (m.offsetTime) {
-            $(ele).data('offsetTime', m.offsetTime);
-        }
-    }
-
-    addTransitions(m, ele) {
-        if (m.transition) {
-            //$(ele).data('tranin', m.transition.tranIn);
-            //$(ele).data('tranout', m.transition.tranOut);
-            this.tranTimeline.fromTo(ele, m.transition.tranin.from, m.transition.tranin.to, 0);
-
-//            myDebugger.log("transition in duration is " + m.transition.tranin.to.duration);
-            this.tranTimeline.to(ele, m.transition.tranout.to, '>');
-//            myDebugger.log("transition out duration is " + m.transition.tranout.to.duration);
-//            myDebugger.log("GSAP duration is " + this.tranTimeline.duration());
-        }
-        else {
-            myDebugger.log("no transition");
-        }
-
+			if (m.offsetTime) {
+				$(ele).data('offsetTime', m.offsetTime);
+			}
+			
+			if (m.content) {
+				$(ele).data('content', m.content);
+			}
+			
+			parentElem.appendChild(ele);
+		}
+		return ele;
     }
 
     getContainerSize(elem) {

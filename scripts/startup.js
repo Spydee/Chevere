@@ -7,6 +7,7 @@ $(document).ready(function () {
     logSelector = '#debug';
     filterSelector = '#debugFilter';
     myDebugger = new debugLogger(logSelector, filterSelector);
+	//myPlayer = null;
 	 
 	slideJSONfile = 'hightech4funSlides.json';
 	animationJSONfile = 'hightech4funAnimations.json';

@@ -42,7 +42,7 @@ class player {
         myDebugger.restoreMode();
         
         // GSAP timelines
-        this.masterTimeline = gsap.timeline();
+        this.masterTimeline = gsap.timeline({paused:true});
         this.loadTimeLines();
 
     }
@@ -54,26 +54,27 @@ class player {
         myDebugger.setMode(0);
 
         try {
-            $(media_div).empty();
+            $("#ht4f_image_div").empty();
             let first = true;
             for (const slide of this.slideJsonData.slides) {
                 myDebugger.setMode(4);
                 myDebugger.log("Preparing slide " + slide.slideNo);
-                myDebugger.restoreMode();
-                var tili = new slideTimeline(slide, this.slideJsonData, this.gsapJsonData);
+                var tili = new slideTimeline(slide, this.slideJsonData, this.gsapJsonData, "#ht4f_image_div");
 
                 if (first) {
+
+
+                    myDebugger.log("First slide");
                     this.masterTimeline.add(tili.createTimeline());
-                    this.masterTimeline.addLabel("slide_" + slide.slideNo, '<+0.75');
+                    this.masterTimeline.addLabel(slide.slideNo, '<+0.75');
                     first = false;
                 }
                 else {
                     this.masterTimeline.add(tili.createTimeline(), '>-0.75');
                     myDebugger.log("GSAP slide time is " + this.masterTimeline.duration());
-                    this.masterTimeline.addLabel("slide_" + slide.slideNo, '<+0.75' );
+                    this.masterTimeline.addLabel(slide.slideNo, '<+0.75' );
                 }
-                myDebugger.log("Label is " + "slide_" + slide.slideNo);
-                console.log(tili);
+                myDebugger.log("Label is " + slide.slideNo);
             }
         }
         catch(e) {
