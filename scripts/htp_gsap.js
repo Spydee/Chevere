@@ -1,10 +1,14 @@
 class slideTimeline {
-    constructor(slide, jsondata, gsapDefinitions, media_div) {
+    constructor(slide, jsondata, gsapDefinitions, media_div, next, prev) {
         this.slide = slide;
         this.timeline = gsap.timeline({paused:true});
         this.elems = [];
         this.jsondata = jsondata;
         this.media_div = media_div;
+        this.gsapDefs = gsapDefinitions;
+        this.nextSlide = next;
+        this.prevSlide = prev;
+        this.content = slide.content;
     }
 
     createTimeline() {
@@ -19,17 +23,32 @@ class slideTimeline {
         // create a transition timeline for all elements that have a transition
         // create an animation timeline for all should not be transition for audio - use
 
-		this.timeline = gsap.timeline();
-		this.slidetraninTarget = "." + this.slide.slideNo + ":not(.animation)";
-		this.slidetranoutTarget = "." + this.slide.slideNo;
-		this.mySlideElements = this.buildSlide(this.slide, $(this.media_div)[0], this.jsondata.assetPath);
-        this.timeline.fromTo(this.slidetraninTarget, this.slide.transition.tranin.from, this.slide.transition.tranin.to);
-        this.timeline.addLabel(this.slide.slideNo);
-		this.timeline.to(this.slidetranoutTarget, {"delay":4, "left":"+=100%", "opacity":0 } , ">");
+        try {
+            this.timeline = gsap.timeline();
 
-        return this.timeline;
+            this.tranline = gsap.timeline();
+            this.slidetraninTarget = "." + this.slide.slideNo + ":not(.animation)";
+            this.slidetranoutTarget = "." + this.slide.slideNo;
+            this.mySlideElements = this.buildSlide(this.slide, $(this.media_div)[0], this.jsondata.assetPath);
+            this.tranline.fromTo(this.slidetraninTarget, this.slide.transition.tranin.from, this.slide.transition.tranin.to);
+//            this.tranline.eventCallback( "onStart", this.updateText, [this.slide]);
+            this.tranline.to(this.slidetranoutTarget, this.slide.transition.tranout.to, ">");
+            this.timeline.add(this.tranline, 0);
+            this.timeline.add(this.createAnimation(this.slide), 0);
+
+            return this.timeline;
+        }
+        catch(e) {
+            "$ERROR$ in createTimeline: " + e.message;
+        }
     }
 
+    getTimeline() {
+        return this.timeline;
+    }
+    getSlide() {
+        return this.slide;
+    }
     	// function buildElements
 	// takes the json file and creates DOM elements
 	// each DOM element has properties saved
@@ -126,29 +145,29 @@ class slideTimeline {
     }
 
     createAnimation(slide) {
-        myDebugger.log("creating animation timeline");
+        let animline = gsap.timeline();
+
+        myDebugger.log("creating animations: " + slide.slideNo + " " + slide.animations.length + " animations");
         for (const animName of slide.animations) {
             myDebugger.log("Searching ...");
 
             let gsapDef;
             try {
-                gsapDef = gsapDefinitions.animations.find(this.findAnimation, animName);
-                console.log(gsapDef);
+                gsapDef = this.gsapDefs.animations.find(this.findAnimation, animName);
                 if (gsapDef){
                     myDebugger.log("animation found: ", animName);
                   //  var mygsap = new gsapAnimation(gsapDef);
-                    this.animationTimeline.add(this.buildAnimation(gsapDef));
+                    animline.add(this.buildAnimation(gsapDef), 0);
                 }
                 else {
                     myDebugger.log("No animations found for slide " + slide.slideNo);
                 }
             }
             catch (e) {
-                myDebugger.log("Error adding " + gsapDef + " to animations");
+                myDebugger.log("Error adding " + gsapDef + " to animations" + e.message);
             }
-
-
         }
+        return animline;
     }
     
 // 'this' is actually animationName - it is passed as the second parameter
@@ -161,7 +180,7 @@ class slideTimeline {
     buildAnimation(anidef) {
         myDebugger.log("Building animation: " + anidef.name + " : " + anidef.tweens.length + " tweens to build");
         
-        let tl = gsap.timeline({paused:true});
+        let tl = gsap.timeline();
         for (const twx of anidef.tweens) {
                 //if ($(twx.target)[0] instanceof HTMLAudioElement) {
                     // handle this different
@@ -192,19 +211,39 @@ class slideTimeline {
      * if the paragraph is blank, add a blank placeholder
      **********************************/
     updateText(slide) {
+        const content_section = "#ht4f_content_text";
         myDebugger.log("Updating content");
+        let contentElem;
+        let headingElem;
+        let paragraphs;
+        let myId;
+        let myClass;
+
         try{
-            let contentElem = $(content_section)[0];
-            let headingElem = contentElem.querySelector('h2');
-            let paragraphs = contentElem.querySelectorAll('p');
-            let myId = paragraphs[0].id;
-            let myClass = paragraphs[0].className;
+            contentElem = $(content_section)[0];
+            if (!contentElem) {
+                throw "Undefined contentElem in updatetext";
+            }
+            headingElem = contentElem.querySelector('h2');
+            if (!headingElem) {
+                throw "Undefined headingElem in updatetext";
+            }
+            paragraphs = contentElem.querySelectorAll('p');
+            myId = paragraphs[0].id;
+            myClass = paragraphs[0].className;
             for (var i = 0; i < paragraphs.length - 1; i++) {
                 paragraphs[i].remove();
             }
+        }
+        catch (e) {
+            myDebugger.log("$ERROR$ removing content at updateText " + slide.slideNo);
+            myDebugger.log(e.message);
+        }
 
+        try {
             var newText = slide.content;
-            myDebugger.log("New content text: ");
+            myDebugger.log(slide.slideTitle);
+            myDebugger.log(" text: " + newText[0]);
 
             headingElem.innerHTML = slide.slideTitle;
 

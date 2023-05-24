@@ -13,7 +13,7 @@
 		],
 		"transition":{
 		"tranin":{"from":{"x":"0%", "alpha":1.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.75}},
-		"tranout":{"to": {"delay":9, "x":"+=100%", "alpha":0.0, "duration":0.75}}
+		"tranout":{"to": {"delay":19, "x":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -35,7 +35,7 @@
 			],
 			
 			"text": "Cloud.png",
-			"style": "position:absolute;left:50%;top:10%;width:50%;transform:translateX(-150%);z-index:7;opacity:0.25"
+			"style": "position:absolute;left:50%;top:10%;width:50%;transform:translateX(-150%);z-index:7;opacity:0.0"
 		  },
 		  {
 			"tag": "img",
@@ -147,7 +147,7 @@
 		],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":17, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -385,8 +385,7 @@
 			"tag": "img",
 			"classLst": [
 			  "ht4f_image",
-			  "ht4f_aspect_ratio",
-			  "animation"
+			  "ht4f_aspect_ratio"
 			],
 			"text": "dancing-banana.gif",
 			"style": "position: absolute; left:57.5%; top:60%; width: 25%; z-index:5;"

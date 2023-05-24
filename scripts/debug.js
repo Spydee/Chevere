@@ -71,7 +71,7 @@ class debugLogger {
     highlightErr(msg) {
         if (msg.includes('$ERROR$')) {
             msg = msg.replace('$ERROR$', '<span style="color:red">$ERROR$</span>');
-            alert("Highlight red ERROR");
+            //alert("Highlight red ERROR");
         } 
         return msg;
     }
