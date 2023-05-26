@@ -18,6 +18,13 @@ class player {
 		this.slideJsonData = slides;
         this.gsapJsonData = animations;
         this.masterTimeline = null;
+
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+    	this.audioCtx = new AudioContext();
+	    this.masterGainNode = this.audioCtx.createGain();
+	    this.masterGainNode.connect(this.audioCtx.destination);
+	    this.masterGainNode.gain.value = 0.4;
+
     }
 
     /*********************************************************
@@ -59,7 +66,7 @@ class player {
             for (const slide of this.slideJsonData.slides) {
                 myDebugger.setMode(4);
                 myDebugger.log("Preparing slide " + slide.slideNo);
-                let tili = new slideTimeline(slide, this.slideJsonData, this.gsapJsonData, "#ht4f_image_div");
+                let tili = new slideTimeline(slide, this.slideJsonData, this.gsapJsonData, this.audioCtx, this.masterGainNode, "#ht4f_image_div");
                 let tl = tili.createTimeline();
                 this.gsapSlides.push(tili);
                 tl.eventCallback( "onStart", this.updateText, [slide]);
@@ -135,6 +142,8 @@ class player {
     // Play or Resume from Pause
 
     play() {
+        if (this.audioCtx.state === 'suspended')
+            this.audioCtx.resume();
 
         if (this.state == "paused") {
             this.resume();
@@ -155,6 +164,7 @@ class player {
     pause() {
         this.masterTimeline.pause();
         this.updatePlayState("pause");
+        this.audioCtx.suspend();
     }
 
     resume() {
@@ -183,11 +193,13 @@ class player {
     rewind() {
         this.masterTimeline.pause();
         this.masterTimeline.seek(0);
+        this.masterTimeline.revert();
         this.updateText(this.slideJsonData.slides[0]);
     }
 
     prev() {
         this.masterTimeline.pause();
+        this.audioCtx.suspend();
         const lbl = this.masterTimeline.previousLabel();
         if (lbl) {
             myDebugger.log("Seek to " + lbl);
@@ -195,8 +207,13 @@ class player {
             this.updatePlayState("next");
 
             for (const sldTime of this.gsapSlides) {
-                if (sldTime.getSlide().slideNo === lbl)
+                let sld = sldTime.getSlide();
+                if (sld.slideNo === lbl)
                 this.updateText(sldTime.getSlide());    
+
+                for (const ele of sldTime.getPlaying()) {
+                    sldTime.stopAudio(ele);
+                }
             }
         }
 
@@ -205,6 +222,7 @@ class player {
 
     next() {
         this.masterTimeline.pause();
+        this.audioCtx.suspend();
         const lbl =  this.masterTimeline.nextLabel();
         if (lbl) {
             myDebugger.log("Seek to " + lbl);

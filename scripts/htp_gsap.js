@@ -1,14 +1,16 @@
 class slideTimeline {
-    constructor(slide, jsondata, gsapDefinitions, media_div, next, prev) {
+    constructor(slide, jsondata, gsapDefinitions, audioContext, masterGain, media_div) {
         this.slide = slide;
         this.timeline = gsap.timeline({paused:true});
         this.elems = [];
         this.jsondata = jsondata;
         this.media_div = media_div;
         this.gsapDefs = gsapDefinitions;
-        this.nextSlide = next;
-        this.prevSlide = prev;
         this.content = slide.content;
+        this.players = [];
+        this.playing = [];
+        this.audioContext = audioContext;
+        this.masterGainNode = masterGain;
     }
 
     createTimeline() {
@@ -27,14 +29,18 @@ class slideTimeline {
             this.timeline = gsap.timeline();
 
             this.tranline = gsap.timeline();
+            this.audioTimeline = gsap.timeline();
+
             this.slidetraninTarget = "." + this.slide.slideNo + ":not(.animation)";
             this.slidetranoutTarget = "." + this.slide.slideNo;
             this.mySlideElements = this.buildSlide(this.slide, $(this.media_div)[0], this.jsondata.assetPath);
             this.tranline.fromTo(this.slidetraninTarget, this.slide.transition.tranin.from, this.slide.transition.tranin.to);
 //            this.tranline.eventCallback( "onStart", this.updateText, [this.slide]);
             this.tranline.to(this.slidetranoutTarget, this.slide.transition.tranout.to, ">");
+
             this.timeline.add(this.tranline, 0);
             this.timeline.add(this.createAnimation(this.slide), 0);
+            this.timeline.add(this.audioTimeline, 0);
 
             return this.timeline;
         }
@@ -48,6 +54,12 @@ class slideTimeline {
     }
     getSlide() {
         return this.slide;
+    }
+    getPlaying() {
+        if (this.playing)
+            return this.playing;
+        else
+            throw "No audio playing";
     }
     	// function buildElements
 	// takes the json file and creates DOM elements
@@ -86,10 +98,31 @@ class slideTimeline {
 			} // end switch
 			
 		// add properties
+        if ($(ele).data('playable')) {
+            if (m.volume) {
+                $(ele).data('volume', m.volume);
+            }
+            else {
+                $(ele).data('volume', 0.01);
+            }
+            let apiPlayer = new audioPlayer(ele, this.audioContext, this.masterGainNode);
+            apiPlayer.setSource(mediaPath + m.text);
+            if (!m.offsetTime) {
+                m.offsetTime = 0;
+            }
+            if (m.delay > 0) {
+                var apStart = gsap.delayedCall(m.delay, this.playAudio, [ele]);
+                this.audioTimeline.add(apStart, 0);
+            }
+            this.playing.push(ele);
+            //            var apStop = gsap.delayedCall(m.duration, apiPlayer.stop);
+//            this.audioTimeline.add(apStop);
+        }
+        else {
 			if ((m.text) && (m.text.length > 0)) {
 				ele.src = mediaPath + m.text;
 			}
-
+        }
 			if (m.classLst) {
 				if (!m.classLst.includes(slide.slideNo) && !(m.tag === "audio" && m.duration < 0) )
 					m.classLst.push(slide.slideNo);
@@ -127,13 +160,49 @@ class slideTimeline {
 				$(ele).data('offsetTime', m.offsetTime);
 			}
 			
-			if (m.content) {
-				$(ele).data('content', m.content);
-			}
-			
+            this.elems.push(ele);
 			parentElem.appendChild(ele);
 		}
 		return ele;
+    }
+
+    playAudio(elem){
+        myDebugger.log("Playing " + elem.src);
+//        $(elem).data('gainNode').connect(this.masterGainNode);
+
+        elem.play();
+        return;
+/*        try {
+            if (!this.audioContext) {
+                throw "Undefined audio context in setSource: " + src;
+            }
+            var audioTrack = this.audioContext.createMediaElementSource(elem);
+            if (!audioTrack) {
+                throw "Cannot create audio track for " + elem.src;
+            }
+            var gainNode = this.audioContext.createGain();
+            var vol = $(elem).data('volume');
+            if (!vol) {
+                throw "node volume not set in setSource: " + elem.src;
+            }
+            gainNode.gain.value = vol;
+            audioTrack.connect(gainNode);
+            gainNode.connect(this.masterGainNode);
+            $(elem).data('track', audioTrack);
+            $(elem).data('gainNode', gainNode);
+            //this.gainNode.connect(audioCtx.destination);
+            myDebugger.log("Set source to " + elem.src);
+        }
+        catch(e) {
+            myDebugger.log("$ERROR$ " + e);
+        }
+
+        elem.play(); */
+    }
+
+    stopAudio(elem) {
+        ele.pause();
+        $(elem).data('gainNode').disconnect();
     }
 
     getContainerSize(elem) {
@@ -201,69 +270,5 @@ class slideTimeline {
         return tl;
     }
 
-    /**********************************
-     * updateText
-     * finds the heading/title assumed to be h2
-     * changes the innerHTML
-     * finds and removes all but the last paragraph
-     * last paragraph is assumed to be ULEclear
-     * adds new paragraphs before the ULEclear paragraph
-     * if the paragraph is blank, add a blank placeholder
-     **********************************/
-    updateText(slide) {
-        const content_section = "#ht4f_content_text";
-        myDebugger.log("Updating content");
-        let contentElem;
-        let headingElem;
-        let paragraphs;
-        let myId;
-        let myClass;
-
-        try{
-            contentElem = $(content_section)[0];
-            if (!contentElem) {
-                throw "Undefined contentElem in updatetext";
-            }
-            headingElem = contentElem.querySelector('h2');
-            if (!headingElem) {
-                throw "Undefined headingElem in updatetext";
-            }
-            paragraphs = contentElem.querySelectorAll('p');
-            myId = paragraphs[0].id;
-            myClass = paragraphs[0].className;
-            for (var i = 0; i < paragraphs.length - 1; i++) {
-                paragraphs[i].remove();
-            }
-        }
-        catch (e) {
-            myDebugger.log("$ERROR$ removing content at updateText " + slide.slideNo);
-            myDebugger.log(e.message);
-        }
-
-        try {
-            var newText = slide.content;
-            myDebugger.log(slide.slideTitle);
-            myDebugger.log(" text: " + newText[0]);
-
-            headingElem.innerHTML = slide.slideTitle;
-
-            if (newText === "" || newText === undefined) {
-                var newP = document.createElement('p');
-                newP.classList.add(myClass);
-                contentElem.insertBefore(newP, contentElem.lastElementChild);
-            }
-            else {
-                for (var para of newText) {
-                    var newP = document.createElement('p');
-                    newP.classList.add(myClass);
-                    newP.innerHTML = para;
-                    contentElem.insertBefore(newP, contentElem.lastElementChild);
-                }
-            }
-        }
-        catch(e) {
-            myDebugger.log("$ERROR$ inserting content text for slide " + slide.slideNo);
-            myDebugger.log(e.message);
-        }
-    }
+ 
 }
