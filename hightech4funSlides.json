@@ -13,7 +13,7 @@
 		],
 		"transition":{
 		"tranin":{"from":{"x":"0%", "alpha":1.0}, "to": {"x":"+=0%", "alpha":1.0, "duration":0.05}},
-		"tranout":{"to": {"delay":23, "alpha":0.0, "duration":0.75}}
+		"tranout":{"to": {"delay":26, "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -61,7 +61,7 @@
 			],
 			"text": "WindThunderRain_96.mp3",
 			"delay": 0.77,
-			"duration": 8.500,
+			"duration": 8.50,
 			"volume":0.9
 		  },
 		  {
@@ -125,7 +125,7 @@
 			"text": "Kayla_Slide1_96.mp3",
 			"delay": 7.20,
 			"offsetTime": 0,
-			"duration": 18.500,
+			"duration": 18.50,
 			"volume":0.9
 		  }
 		],
@@ -147,7 +147,7 @@
 		],
 		"transition":{
 			"tranin":{"from":{"alpha":0.0}, "to": {"alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":16, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":22, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -261,9 +261,7 @@
 			  "ht4f_image",
 			  "ht4f_aspect_ratio"
 			],
-			"text": "ht4f3.png",
-			"set":{"x":0, "y":0, "alpha":0},
-			"style": "position:absolute;"
+			"text": "ht4f3.png"
 		  },
 		  {
 			"tag": "audio",
@@ -275,7 +273,7 @@
 			"delay": -1,
 			"offsetTime": 38.4,
 			"duration": 25.0,
-			"volume":0.4			
+			"volume":0.9			
 		  },
 		  {
 			"tag": "audio",
@@ -283,7 +281,7 @@
 			  "ht4f_audio"
 			],
 			"text": "Andrew_Slide3_96.mp3",
-			"delay": 0.05,
+			"delay": 0.85,
 			"offsetTime": 0,
 			"duration": 26.50,
 			"volume":0.9
@@ -316,12 +314,8 @@
 			],
 			"text": "tki_movie2_x264_001.mp4",
 			"style": "position: absolute; width:50%; left:50%; top:43%; z-index:5;",
-			"delay":16.5,
-			"duration":3.5,
-			"playTime": {
-				"playStart": 16.5,
-				"playPause" : 19
-			}
+			"delay":17.50,
+			"duration":5.0
 		  }
 		],
 		"content": [
@@ -339,7 +333,7 @@
 		],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":12, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":22, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -349,12 +343,7 @@
 			  "ht4f_aspect_ratio"
 			],
 			"text": "ht4f4.png",
-			"set":{"x":0, "y":0, "alpha":0},
-			"style": "position:absolute;",
-			"transition":{
-				"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
-			}
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "audio",
@@ -363,7 +352,7 @@
 			  "background"
 			],
 			"text": "CaptainJack_96.mp3",
-			"delay": 5,
+			"delay": 0.5,
 			"offsetTime": 0,
 			"duration": -1,
 			"volume":0.5			
@@ -374,9 +363,9 @@
 			  "ht4f_audio"
 			],
 			"text": "Andrew_Slide4_96.mp3",
-			"delay": 5,
+			"delay": 0.75,
 			"offsetTime": 0,
-			"duration": 27000,
+			"duration": 27.0,
 			"volume":0.9			
 		  },
 		  {
@@ -404,7 +393,7 @@
 		"animations": [],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":12, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -416,11 +405,7 @@
 			],
 			"text": "ht4f5.png",
 			"set":{"x":0, "y":0, "alpha":0},
-			"style": "position:absolute;",
-			"transition":{
-				"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
-			}
+			"style": "position:absolute;"
  		 },
 		 {
 			"tag": "audio",
@@ -430,7 +415,7 @@
 			],
 			"text": "CaptainJack_96.mp3",
 			"delay": -1,
-			"offsetTime": 27000,
+			"offsetTime": 27.0,
 			"duration": -1,
 			"volume":0.1
 		  },
@@ -440,9 +425,9 @@
 			  "ht4f_audio"
 			],
 			"text": "Andrew_Slide5_96.mp3",
-			"delay": 5,
+			"delay": 0.5,
 			"offsetTime": 0,
-			"duration": 5000,
+			"duration": 5.0,
 			"volume":0.9			
 		  }
 		],
@@ -468,11 +453,7 @@
 			],
 			"text": "ht4f6.png",
 			"set":{"x":0, "y":0, "alpha":0},
-			"style": "position:absolute;",
-			"transition":{
-				"tranin":{"from":{"y":"-100%", "alpha":0}, "to": {"y":"+=100%", "alpha":1.0, "duration":0.75}},
-				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
-			}
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "audio",
@@ -481,7 +462,7 @@
 			],
 			"text": "Andrew_Slide6_96.mp3",
 			"delay": 0,
-			"duration": 1900,
+			"duration": 1.90,
 			"volume":0.9
 		  },
 		  {
@@ -492,7 +473,7 @@
 			],
 			"text": "CaptainJack_96.mp3",
 			"delay": -1,
-			"offsetTime": 32000,
+			"offsetTime": 32.0,
 			"duration": -1,
 			"volume":0.25			
 		  }
@@ -519,11 +500,7 @@
 			],
 			"text": "ht4f7.png",
 			"set":{"x":0, "y":0, "alpha":0},
-			"style": "position:absolute;",
-			"transition":{
-				"tranin":{"from":{"x":"-100%", "alpha":0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-				"tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
-			}
+			"style": "position:absolute;"
 		  },
 		  {
 			"tag": "audio",
@@ -533,7 +510,7 @@
 			],
 			"text": "CaptainJack_96.mp3",
 			"delay": -1,
-			"offsetTime": 36000,
+			"offsetTime": 36.0,
 			"duration": -1,
 			"volume":0.3			
 		  },
@@ -544,8 +521,8 @@
 			  "windRain"
 			],
 			"text": "Andrew_Slide7_96.mp3",
-			"delay": 5,
-			"duration": 3500,
+			"delay": 0.5,
+			"duration": 3.50,
 			"volume":0.9
 		  }
 		],
@@ -572,11 +549,7 @@
           ],
           "text": "ht4f8.png",
 		  "set":{"x":0, "y":0, "alpha":0},
-		  "style": "position:absolute;",
-		  "transition":{
-			  "tranin":{"from":{"x":"-100%", "alpha":0.5}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			  "tranout":{"to": {"delay":2,"alpha":0.0, "duration":0.75}}
-		  }
+		  "style": "position:absolute;"
 	  }
       ],
       "content": []

@@ -9,6 +9,7 @@ class slideTimeline {
         this.content = slide.content;
         this.players = [];
         this.playing = [];
+        this.perpetuals = [];
         this.audioContext = audioContext;
         this.masterGainNode = masterGain;
     }
@@ -61,6 +62,10 @@ class slideTimeline {
         else
             throw "No audio playing";
     }
+    getPerpetuals() {
+        if (this.perpetuals)
+            return this.perpetuals;
+    }
     	// function buildElements
 	// takes the json file and creates DOM elements
 	// each DOM element has properties saved
@@ -69,7 +74,8 @@ class slideTimeline {
 	// mediapath is the global location for the media
 	buildSlide(slide, parentElem, mediaPath) {
 		for (const m of slide.media) {
-	        var ele = document.createElement(m.tag);
+  	        var ele = document.createElement(m.tag);
+
 			switch (m.tag) {
 				case 'img':
 					$(ele).data('viewable', 1);
@@ -98,25 +104,61 @@ class slideTimeline {
 			} // end switch
 			
 		// add properties
+
         if ($(ele).data('playable')) {
-            if (m.volume) {
-                $(ele).data('volume', m.volume);
+            let allAudio = document.getElementsByTagName('audio');
+            let duplicate = false;
+            for (const myEle of allAudio) {
+                if (myEle.src.includes(m.text)) {
+                    myDebugger.log(myEle.src + " exists already");
+                    ele = myEle;
+                    duplicate = true;
+                    break;
+                }
             }
-            else {
-                $(ele).data('volume', 0.01);
+            // delay is based on the end of transition in
+            if (!m.delay)
+                m.delay = 0;
+            if (m.delay >= 0)
+                m.delay += slide.transition.tranin.to.duration + 0.001;
+    
+            if (!m.volume) {
+                m.volume = 0.1;
             }
-            let apiPlayer = new audioPlayer(ele, this.audioContext, this.masterGainNode);
-            apiPlayer.setSource(mediaPath + m.text);
+            $(ele).data('volume', m.volume);
+
             if (!m.offsetTime) {
                 m.offsetTime = 0;
             }
-            if (m.delay > 0) {
-                var apStart = gsap.delayedCall(m.delay, this.playAudio, [ele]);
+
+
+            if ( (m.delay < 0) || (m.duration < 0) ) {
+                let perpProps = {"elem":ele, 
+                "offsetTime":m.offsetTime, "delay":m.delay, 
+                "duration":m.duration, "volume":$(ele).data('volume')};
+                this.perpetuals.push(perpProps);
+            }
+
+            if (!duplicate) {
+                ele.src = mediaPath + m.text;
+                $(ele).data("offsetTime", m.offsetTime);
+                ele.currentTime = m.offsetTime;
+                this.audioSetNodes(ele, this.audioContext, this.masterGainNode);
+            }
+
+            if (m.delay >= 0) {
+                myDebugger.log(ele.src + ": Delayed call of " + m.delay);
+                var delay = m.delay;
+                if (slide.transition.tranin.delay)
+                    delay += slide.transition.tranin.delay + 0.01;
+                var apStart = gsap.delayedCall(delay, this.playAudio, [ele, this.audioContext, this.masterGainNode]);
                 this.audioTimeline.add(apStart, 0);
             }
             this.playing.push(ele);
-            //            var apStop = gsap.delayedCall(m.duration, apiPlayer.stop);
-//            this.audioTimeline.add(apStop);
+            if (m.duration > 0) {
+                const apStop = gsap.delayedCall(m.duration, this.stopAudio, [ele]);
+                this.audioTimeline.add(apStop, ">");
+            }
         }
         else {
 			if ((m.text) && (m.text.length > 0)) {
@@ -149,16 +191,6 @@ class slideTimeline {
 				//      gsap.set(ele, {x:0, y:0, scaleX:"80%", alpha:0});
 			}
 
-			if (m.duration) {
-				$(ele).data('duration', m.duration);
-			}
-			if (m.delay) {
-				$(ele).data('delay', m.delay);
-			}
-
-			if (m.offsetTime) {
-				$(ele).data('offsetTime', m.offsetTime);
-			}
 			
             this.elems.push(ele);
 			parentElem.appendChild(ele);
@@ -166,43 +198,41 @@ class slideTimeline {
 		return ele;
     }
 
-    playAudio(elem){
+    audioSetNodes(elem, audioCtx, masterNode) {
+        let track = audioCtx.createMediaElementSource(elem);
+        let gainNode = audioCtx.createGain();
+        let vol = $(elem).data('volume');
+        if (!vol) {
+            throw "node volume not set in setSource: " + elem.src;
+        }
+        gainNode.gain.value = vol;
+        track.connect(gainNode);
+    //    gainNode.connect(masterNode);
+        $(elem).data('gainNode', gainNode);
+
+    }
+
+    playAudio(elem, audioCtx, masterNode){
         myDebugger.log("Playing " + elem.src);
-//        $(elem).data('gainNode').connect(this.masterGainNode);
-
+        if ($(elem).data('gainNode')) {
+            $(elem).data('gainNode').connect(masterNode);
+        }
+//        const ot = $(elem).data('offsetTime')
+//        if (ot && ot > 0 && ot < 1)
+//            elem.currentTime = ot;
         elem.play();
-        return;
-/*        try {
-            if (!this.audioContext) {
-                throw "Undefined audio context in setSource: " + src;
-            }
-            var audioTrack = this.audioContext.createMediaElementSource(elem);
-            if (!audioTrack) {
-                throw "Cannot create audio track for " + elem.src;
-            }
-            var gainNode = this.audioContext.createGain();
-            var vol = $(elem).data('volume');
-            if (!vol) {
-                throw "node volume not set in setSource: " + elem.src;
-            }
-            gainNode.gain.value = vol;
-            audioTrack.connect(gainNode);
-            gainNode.connect(this.masterGainNode);
-            $(elem).data('track', audioTrack);
-            $(elem).data('gainNode', gainNode);
-            //this.gainNode.connect(audioCtx.destination);
-            myDebugger.log("Set source to " + elem.src);
-        }
-        catch(e) {
-            myDebugger.log("$ERROR$ " + e);
-        }
-
-        elem.play(); */
     }
 
     stopAudio(elem) {
-        ele.pause();
-        $(elem).data('gainNode').disconnect();
+        myDebugger.log("Stopping " + elem.src);
+        elem.currentTime = 0;
+        elem.pause();
+
+        const gn = $(elem).data("gainNode");
+        if (gn)
+            gn.disconnect();
+        else 
+            throw "$ERROR$ Cannot disconnect audio";
     }
 
     getContainerSize(elem) {

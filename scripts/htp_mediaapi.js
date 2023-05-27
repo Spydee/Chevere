@@ -13,28 +13,22 @@ class apiPlayer {
         this.elem.onloadeddata = function() {
             this.readyToPlay = true;
         }
+        return;
         try {
             if (!this.audioContext) {
                 throw "Undefined audio context in setSource: " + src;
             }
 
-            this.audioTrack = this.audioContext.createMediaElementSource(this.elem);
-            if (!this.audioTrack) {
-                throw "Cannot create audio track for " + src;
-            }
-            this.gainNode = this.audioContext.createGain();
-            $(this.elem).data('track', this.audioTrack);
-            $(this.elem).data('gainNode', this.gainNode);
-
+            $(this.elem).data('track', this.audioContext.createMediaElementSource(this.elem));
+            $(this.elem).data('gainNode', this.audioContext.createGain());
             let vol = $(this.elem).data('volume');
             if (!vol) {
                 throw "node volume not set in setSource: " + src;
             }
             $(this.elem).data('gainNode').gain.value = vol;
-//            this.gainNode.gain.value = vol;
-            this.audioTrack.connect(this.gainNode);
-  //          $(this.elem).data('gainNode').connect(this.masterGainNode);
-            this.gainNode.connect(this.masterGainNode);
+            $(this.elem).data('track').connect($(this.elem).data('gainNode'));
+//            $(this.elem).data('gainNode').connect(this.masterGainNode);
+//            this.gainNode.connect(this.masterGainNode);
             //this.gainNode.connect(audioCtx.destination);
             myDebugger.log("Set source to " + this.elem.src);
     /*        */

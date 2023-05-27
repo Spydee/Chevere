@@ -74,14 +74,17 @@ class player {
                 if (first) {
                     myDebugger.log("First slide");
                     this.masterTimeline.add(tl);
-                    this.masterTimeline.addLabel(slide.slideNo, '<+0.75');
+                    let pos = '<+' + slide.transition.tranin.duration;
+                    this.masterTimeline.addLabel(slide.slideNo, pos);
                     
                     first = false;
                 }
                 else {
-                    this.masterTimeline.add(tl, '>-0.75');
+                    let pos = '>-' + slide.transition.tranin.to.duration;
+                    this.masterTimeline.add(tl, pos);
                     myDebugger.log("GSAP slide time is " + this.masterTimeline.duration());
-                    this.masterTimeline.addLabel(slide.slideNo, '<+0.75' );
+                    pos = '<+' + slide.transition.tranin.to.duration;
+                    this.masterTimeline.addLabel(slide.slideNo, pos );
                 }
                 myDebugger.log("Label is " + slide.slideNo);
             }
@@ -142,20 +145,35 @@ class player {
     // Play or Resume from Pause
 
     play() {
-        if (this.audioCtx.state === 'suspended')
-            this.audioCtx.resume();
-
-        if (this.state == "paused") {
+        myDebugger.setMode(4);
+        myDebugger.log("Starting play");
+        if (this.state === "paused") {
             this.resume();
             return;
         }
-
-        if (this.state == "ended") {
-            console.log("already at end");
+        if (this.state === "ended") {
+            myDebugger.log("already at end");
             return;
         }
+
+        if (this.audioCtx.state === 'suspended')
+            this.audioCtx.resume();
+
     //    myDebugger.log("Playing timelines");
-        
+
+        const curSlideLbl = this.masterTimeline.currentLabel();
+        for (const sldTime of this.gsapSlides) {
+            let sld = sldTime.getSlide();
+            if (sld.slideNo === curSlideLbl) {
+                for (const perp of sldTime.getPerpetuals()) {
+                    if (perp.delay < 0){
+                        myDebugger.log("Continue playing: " + perp.elem.src);
+                        perp.elem.currentTime = perp.offsetTime;
+                        sldTime.playAudio(perp.elem, this.audioCtx, this.masterGainNode);
+                    }
+                }
+            }
+        }
         this.masterTimeline.play();
         this.updatePlayState("play");
         return;
@@ -169,13 +187,14 @@ class player {
 
     resume() {
         this.masterTimeline.resume();
-//        for (var slide of this.gsapSlides) {
+        this.audioCtx.resume();
+        //        for (var slide of this.gsapSlides) {
 //            slide.resume();
 //        }
         this.updatePlayState("play");
         return;    
 
-
+/*
         if (this.autoTimer != null)
             this.autoTimer.resume();
         this.myActiveSlide.resumeAll();
@@ -183,6 +202,7 @@ class player {
         for (const m of myaniarray) {
             m.resume();
         }
+        */
         const animations = document.querySelectorAll('.animation');
         animations.forEach(animation => {
             animation.style.animationPlayState = 'running';
@@ -200,42 +220,58 @@ class player {
     prev() {
         this.masterTimeline.pause();
         this.audioCtx.suspend();
-        const lbl = this.masterTimeline.previousLabel();
-        if (lbl) {
-            myDebugger.log("Seek to " + lbl);
-            this.masterTimeline.seek(lbl);
-            this.updatePlayState("next");
-
-            for (const sldTime of this.gsapSlides) {
-                let sld = sldTime.getSlide();
-                if (sld.slideNo === lbl)
-                this.updateText(sldTime.getSlide());    
-
+        const curSlideLbl = this.masterTimeline.currentLabel();
+        for (const sldTime of this.gsapSlides) {
+            let sld = sldTime.getSlide();
+            if (sld.slideNo === curSlideLbl) {
                 for (const ele of sldTime.getPlaying()) {
                     sldTime.stopAudio(ele);
                 }
             }
         }
 
+        const lbl = this.masterTimeline.previousLabel();
+        if (lbl) {
+            myDebugger.log("Seek to " + lbl);
+            this.masterTimeline.seek(lbl);
+            this.updatePlayState("prev");
+
+            for (const sldTime of this.gsapSlides) {
+                let sld = sldTime.getSlide();
+                if (sld.slideNo === lbl) {
+                    this.updateText(sldTime.getSlide());
+                }
+            }
+        }
         this.updatePlayState("prev");
     }
 
     next() {
         this.masterTimeline.pause();
         this.audioCtx.suspend();
-        const lbl =  this.masterTimeline.nextLabel();
-        if (lbl) {
-            myDebugger.log("Seek to " + lbl);
-            this.masterTimeline.seek(lbl);
-            this.updatePlayState("next");
-
-            for (const sldTime of this.gsapSlides) {
-                if (sldTime.getSlide().slideNo === lbl)
-                this.updateText(sldTime.getSlide());    
+        const curSlideLbl = this.masterTimeline.currentLabel();
+        for (const sldTime of this.gsapSlides) {
+            let sld = sldTime.getSlide();
+            if (sld.slideNo === curSlideLbl) {
+                for (const ele of sldTime.getPlaying()) {
+                    sldTime.stopAudio(ele);
+                }
             }
         }
-        myDebugger.restoreMode();
+        const nextLbl = this.masterTimeline.nextLabel();
+        if (nextLbl) {
+            for (const sldTime of this.gsapSlides) {
+                let sld = sldTime.getSlide();
+                if (sld.slideNo === nextLbl) {
+                    this.updateText(sldTime.getSlide());
+                }
+            }
+            myDebugger.log("Seek to " + nextLbl);
+            this.masterTimeline.seek(nextLbl);
+        }
+        this.updatePlayState("next");
     }
+    
 
     stop() {
         this.fullStop();
