@@ -261,7 +261,7 @@ class slideTimeline {
 
 //        const ot = $(elem).data('offsetTime')
 //        if (ot && ot > 0 && ot < 1)
-//            elem.currentTime = ot;
+            elem.currentTime = 2.0;
         elem.play();
     }
 
