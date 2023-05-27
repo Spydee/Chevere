@@ -213,10 +213,17 @@ class slideTimeline {
     }
 
     playAudio(elem, audioCtx, masterNode){
-        myDebugger.log("Playing " + elem.src);
-        if ($(elem).data('gainNode')) {
-            $(elem).data('gainNode').connect(masterNode);
+        try{
+            myDebugger.log("Playing " + elem.src);
+            if ($(elem).data('gainNode')) {
+                $(elem).data('gainNode').connect(masterNode);
+            }
+            else throw "unable to connect " + elem.src + " to masterNode";
         }
+        catch(e) {
+            myDebugger.log("In playAudio " + e);
+        }
+
 //        const ot = $(elem).data('offsetTime')
 //        if (ot && ot > 0 && ot < 1)
 //            elem.currentTime = ot;
