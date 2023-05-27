@@ -183,6 +183,18 @@ class player {
         this.masterTimeline.pause();
         this.updatePlayState("pause");
         this.audioCtx.suspend();
+
+        const curSlideLbl = this.masterTimeline.currentLabel();
+        for (const sldTime of this.gsapSlides) {
+            let sld = sldTime.getSlide();
+            if (sld.slideNo === curSlideLbl) {
+                for (const ele of sldTime.getPlaying()) {
+                    myDebugger.log("Time: " + ele.currentTime + " for " + ele.src);
+
+                }
+            }
+        }
+
     }
 
     resume() {

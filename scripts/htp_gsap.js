@@ -198,15 +198,50 @@ class slideTimeline {
 		return ele;
     }
 
-    audioSetNodes(elem, audioCtx, masterNode) {
+    audioBufferCreate(url, audioCtx, masterNode) {
+        return new Promise((resolve, reject) => {
+            if (!url) {
+                reject("Missing url!");
+                return;
+            }
+    
+            if (!audioCtx) {
+                reject("Missing audio context!");
+                return;
+            }
+    
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.responseType = "arraybuffer";
+    
+            xhr.onload = function() {
+                let arrayBuffer = xhr.response;
+                audioCtx.decodeAudioData(arrayBuffer, decodedBuffer => {
+                    resolve(decodedBuffer);
+                });
+            };
+    
+            xhr.onerror = function() {
+                reject("An error occurred.");
+            };
+    
+            xhr.send();
+        });
+    }
+    async audioSetNodes(elem, audioCtx, masterNode) {
         let track = audioCtx.createMediaElementSource(elem);
+//        let track = await this.audioBufferCreate(elem.src, audioCtx, masterNode);
+//        myDebugger.log(track);
         let gainNode = audioCtx.createGain();
         let vol = $(elem).data('volume');
         if (!vol) {
             throw "node volume not set in setSource: " + elem.src;
         }
         gainNode.gain.value = vol;
-        track.connect(gainNode);
+        if (!gainNode || !track)
+            throw "Failed to create track and node " + elem.src;
+        else
+            track.connect(gainNode);
     //    gainNode.connect(masterNode);
         $(elem).data('gainNode', gainNode);
 
