@@ -19,8 +19,8 @@
       ]},
 
       {"name":"flyingText", "type":"div",
-            "tweens":[{"target":".flyinText li","from":[{"delay":2.1,"duration":3.5, "opacity":0, "x":"-=250%", "stagger":{"amount":5}}]},
-                      {"target":".flyinText2 li","from":[{"delay":2.1,"duration":0.5, "x":"-=800px", "stagger":{"each":0.1, "from":"end"}}]}]},
+            "tweens":[{"target":".flyinText li","from":[{"delay":2.1,"duration":3.5, "alpha":0, "x":"-=250%", "stagger":{"amount":5}}]},
+                      {"target":".flyinText2 li","from":[{"delay":2.1,"duration":0.5, "alpha":0, "x":"-=800px", "stagger":{"each":0.1, "from":"end"}}]}]},
 
       {"name":"highlightDiv","type":"div",
             "tweens":[{"target":".divHighlight", "from":[{"delay":2,"duration":0,"x":"-=200%","autoAlpha":0}], 

@@ -18,13 +18,25 @@ class player {
 		this.slideJsonData = slides;
         this.gsapJsonData = animations;
         this.masterTimeline = null;
-
         const AudioContext = window.AudioContext || window.webkitAudioContext;
-    	this.audioCtx = new AudioContext();
-	    this.masterGainNode = this.audioCtx.createGain();
-	    this.masterGainNode.connect(this.audioCtx.destination);
-	    this.masterGainNode.gain.value = 0.4;
+        this.audioCtx = new AudioContext();
 
+        this.masterGainNode = null;
+        this.audioInitialized = false;
+        this.initAudioCtx();
+
+    }
+
+    initAudioCtx() {
+        try {
+            this.masterGainNode = this.audioCtx.createGain();
+            this.masterGainNode.connect(this.audioCtx.destination);
+            this.masterGainNode.gain.value = 0.4;
+            this.audioInitialized = true;
+        }
+        catch(e) {
+            myDebugger.log("$ERROR$ Failed to initialize audio context");
+        }
     }
 
     /*********************************************************
@@ -156,6 +168,9 @@ class player {
             return;
         }
 
+//        if (this.audioCtx === null) {
+//            this.initAudioCtx();
+//        }
         if (this.audioCtx.state === 'suspended')
             this.audioCtx.resume();
 

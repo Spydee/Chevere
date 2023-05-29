@@ -247,7 +247,41 @@ class slideTimeline {
 
     }
 
+    connectAudioElem(elem, audioCtx, masterNode) {
+        let track = audioCtx.createMediaElementSource(elem);
+        let gainNode = audioCtx.createGain();
+        let vol = $(elem).data('volume');
+        if (!vol) {
+            throw "node volume not set in setSource: " + elem.src;
+        }
+        gainNode.gain.value = vol;
+        if (!gainNode || !track)
+            throw "Failed to create track and node " + elem.src;
+        else
+            track.connect(gainNode);
+            gainNode.connect(masterNode);
+        $(elem).data('gainNode', gainNode);
+    }
+
     playAudio(elem, audioCtx, masterNode){
+
+        /*
+        let track = audioCtx.createMediaElementSource(elem);
+        let gainNode = audioCtx.createGain();
+        let vol = $(elem).data('volume');
+        if (!vol) {
+            throw "node volume not set in setSource: " + elem.src;
+        }
+        gainNode.gain.value = vol;
+        if (!gainNode || !track)
+            throw "Failed to create track and node " + elem.src;
+        else {
+            track.connect(gainNode);
+            gainNode.connect(masterNode);
+            $(elem).data('gainNode', gainNode);
+            elem.play();
+        }
+        return; */
         try{
             myDebugger.log("Playing " + elem.src);
             if ($(elem).data('gainNode')) {
@@ -258,10 +292,6 @@ class slideTimeline {
         catch(e) {
             myDebugger.log("In playAudio " + e);
         }
-
-//        const ot = $(elem).data('offsetTime')
-//        if (ot && ot > 0 && ot < 1)
-            elem.currentTime = 2.0;
         elem.play();
     }
 
@@ -292,10 +322,10 @@ class slideTimeline {
         for (const animName of slide.animations) {
             myDebugger.log("Searching ...");
 
-            let gsapDef;
+            let gsapDef = null;
             try {
                 gsapDef = this.gsapDefs.animations.find(this.findAnimation, animName);
-                if (gsapDef){
+                if (gsapDef !== null){
                     myDebugger.log("animation found: ", animName);
                   //  var mygsap = new gsapAnimation(gsapDef);
                     animline.add(this.buildAnimation(gsapDef), 0);

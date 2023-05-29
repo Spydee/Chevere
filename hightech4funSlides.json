@@ -221,10 +221,10 @@
 			  "flyinText"
 			],
 			"text": "",
-			"style": "position:absolute;left:50%;top:42%;color:green;font-size:1.5em;transform:translateX(-50%);list-style:none;display:inline-flex",
+			"style": "position:absolute;left:50%;top:42%;color:green;font-size:4.5vw;transform:translateX(-50%);list-style:none;display:inline-flex",
 			"delay": 4.0,
 			"duration": 3.0,
-			"innerHTML": "\u003Cli\u003ET\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Es\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Eb\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Eg\u003C/li\u003E\u003Cli\u003Ey\u003C/li\u003E"
+			"innerHTML": "\u003Cli\u003ET\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Es\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Eb\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Eg\u003C/li\u003E\u003Cli\u003Ey\u003C/li\u003E\u003Cli\u003E,\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E"
 		  },
 		  {
 			"tag": "ul",
@@ -233,10 +233,10 @@
 			  "flyinText2"
 			],
 			"text": "",
-			"style": "position:absolute;left:50%;top:50%;color:blue;font-size:2em;transform:translateX(-50%);list-style:none;display:inline-flex",
+			"style": "position:absolute;left:50%;top:50%;color:blue;font-size:6vw;transform:translateX(-50%);list-style:none;display:inline-flex",
 			"delay": 5.0,
 			"duration": 3.0,
-			"innerHTML": "\u003Cli\u003ET\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Es\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Eb\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Eg\u003C/li\u003E\u003Cli\u003Ey\u003C/li\u003E\u003Cli\u003E,\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E\u003Cli\u003Eo\u003C/li\u003E"
+			"innerHTML": "\u003Cli\u003ET\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003Es\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ec\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Eb\u003C/li\u003E\u003Cli\u003Ee\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Ea\u003C/li\u003E\u003Cli\u003E\u0026nbsp\u003C/li\u003E\u003Cli\u003Et\u003C/li\u003E\u003Cli\u003Eh\u003C/li\u003E\u003Cli\u003Ei\u003C/li\u003E\u003Cli\u003En\u003C/li\u003E\u003Cli\u003Eg\u003C/li\u003E\u003Cli\u003Ey\u003C/li\u003E"
 		  }
 		],
 		"content": [
@@ -314,7 +314,7 @@
 			],
 			"text": "tki_movie2_x264_001.mp4",
 			"style": "position: absolute; width:50%; left:50%; top:43%; z-index:5;",
-			"delay":17.50,
+			"delay":17.0,
 			"duration":5.0
 		  }
 		],
@@ -333,7 +333,7 @@
 		],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":22, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":27, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -393,7 +393,7 @@
 		"animations": [],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":12, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":7, "y":"-=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -442,7 +442,7 @@
 		"animations": [],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":2.5, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -487,8 +487,8 @@
 		"slideTitle": "Slide 7: Unlimited Transitions",
 		"animations": [],
 		"transition":{
-			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranin":{"from":{"scaleX":0.0, "x":"-100%", "y":"-100%", "alpha":0.0}, "to": {"scaleX":1.0, "x":"+=100%", "y":"+=100%", "alpha":1.0, "duration":1.75}},
+			"tranout":{"to": {"delay":3, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -535,7 +535,7 @@
       "slideTitle": "Slide 8: Unlimited Transitions",
       "animations": [],
 	  "transition":{
-		"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+		"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":1.25}},
 		"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 	},
       "media": [
@@ -559,7 +559,7 @@
       "slideTitle": "Slide 9: The End",
       "animations": [],
 	  "transition":{
-		"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
+		"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "rotationX":"360deg", "rotationY":"360deg", "alpha":1.0, "duration":1.75}},
 		"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 	},
       "media": [
