@@ -167,6 +167,12 @@ class player {
             myDebugger.log("already at end");
             return;
         }
+        let allAudio = document.getElementsByTagName('audio');
+        for (const a of allAudio) {
+            a.play();
+            a.pause();
+        }
+
 
 //        if (this.audioCtx === null) {
 //            this.initAudioCtx();
