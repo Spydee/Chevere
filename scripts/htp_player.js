@@ -157,9 +157,8 @@ class player {
     // Play or Resume from Pause
 
     play() {
-        myDebugger.log("Version 0.31");
         myDebugger.setMode(4);
-        myDebugger.log("Starting play");
+        myDebugger.log("Starting play: v 0.31");
         if (this.state === "paused") {
             this.resume();
             return;
