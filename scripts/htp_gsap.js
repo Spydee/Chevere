@@ -119,7 +119,7 @@ class slideTimeline {
             // delay is based on the end of transition in
             if (!m.delay)
                 m.delay = 0;
-            if (m.delay >= 0)
+            if ( (m.delay >= 0) && (slide.transition.tranin.to.duration) )
                 m.delay += slide.transition.tranin.to.duration + 0.001;
     
             if (!m.volume) {
@@ -131,7 +131,7 @@ class slideTimeline {
                 m.offsetTime = 0;
             }
 
-
+            console.log("m.delay is " + m.delay);
             if ( (m.delay < 0) || (m.duration < 0) ) {
                 let perpProps = {"elem":ele, 
                 "offsetTime":m.offsetTime, "delay":m.delay, 
@@ -148,9 +148,11 @@ class slideTimeline {
 
             if (m.delay >= 0) {
                 myDebugger.log(ele.src + ": Delayed call of " + m.delay);
-                var delay = m.delay;
-                if (slide.transition.tranin.delay)
-                    delay += slide.transition.tranin.delay + 0.01;
+                let delay = m.delay;
+                if (slide.transition.tranin.to.delay) {
+                    delay += slide.transition.tranin.to.delay + 0.01;
+                }
+
                 var apStart = gsap.delayedCall(delay, this.playAudio, [ele, this.audioContext, this.masterGainNode]);
                 this.audioTimeline.add(apStart, 0);
             }

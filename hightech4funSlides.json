@@ -393,7 +393,7 @@
 		"animations": [],
 		"transition":{
 			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":7, "y":"-=100%", "alpha":0.0, "duration":0.75}}
+			"tranout":{"to": {"delay":5.5, "y":"-=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -441,8 +441,8 @@
 		"slideTitle": "Slide 6: Unlimited Transitions",
 		"animations": [],
 		"transition":{
-			"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":0.75}},
-			"tranout":{"to": {"delay":2.5, "y":"+=100%", "alpha":0.0, "duration":0.75}}
+			"tranin":{"from":{"y":"100%", "alpha":0.0}, "to": {"y":"0%", "alpha":1.0, "duration":0.75}},
+			"tranout":{"to": {"delay":2.5, "y":"+100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
 		  {
@@ -487,7 +487,7 @@
 		"slideTitle": "Slide 7: Unlimited Transitions",
 		"animations": [],
 		"transition":{
-			"tranin":{"from":{"scaleX":0.0, "x":"-100%", "y":"-100%", "alpha":0.0}, "to": {"scaleX":1.0, "x":"+=100%", "y":"+=100%", "alpha":1.0, "duration":1.75}},
+			"tranin":{"from":{"y":"-100%", "alpha":0.0}, "to": {"y":"0%", "alpha":1.0, "duration":0.75}},
 			"tranout":{"to": {"delay":3, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 		},
 		"media": [
@@ -535,7 +535,7 @@
       "slideTitle": "Slide 8: Unlimited Transitions",
       "animations": [],
 	  "transition":{
-		"tranin":{"from":{"x":"-100%", "alpha":0.0}, "to": {"x":"+=100%", "alpha":1.0, "duration":1.25}},
+		"tranin":{"from":{"scaleX":0.0, "x":"-100%", "y":"-100%", "alpha":0.0}, "to": {"scaleX":1.0, "x":"+=100%", "y":"+=100%", "alpha":1.0, "duration":0.75}},
 		"tranout":{"to": {"delay":2, "y":"+=100%", "alpha":0.0, "duration":0.75}}
 	},
       "media": [

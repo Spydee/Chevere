@@ -31,7 +31,7 @@ class player {
         try {
             this.masterGainNode = this.audioCtx.createGain();
             this.masterGainNode.connect(this.audioCtx.destination);
-            this.masterGainNode.gain.value = 0.4;
+            this.masterGainNode.gain.value = 0.9;
             this.audioInitialized = true;
         }
         catch(e) {
@@ -45,6 +45,7 @@ class player {
      *   load first slide
      *********************************************************/
     init() {
+        var self = this;
         this.ULE = document.getElementById("ht4f_div_graphics");
         this.ULE.addEventListener('play', () => this.play());
         this.ULE.addEventListener('pause', () => this.pause());
@@ -52,14 +53,10 @@ class player {
         this.ULE.addEventListener('next', () => this.next());
         this.ULE.addEventListener('rewind', () => this.rewind());
         this.ULE.addEventListener('volumeChanged', function (e) {
-            masterGainNode.gain.value = (e.detail.volume);
+            self.masterGainNode.gain.value = (e.detail.volume);
         });
         //    this.ULE.addEventListener('full',  () => console.log('full') );
-        let searchPath = [this.slideJsonData.assetPath, this.slideJsonData.altPath, "."];
-        myDebugger.setMode(4);
-        myDebugger.log("Search paths are " + searchPath[0] + ", " + searchPath[1]);
-        myDebugger.restoreMode();
-        
+
         // GSAP timelines
         this.masterTimeline = gsap.timeline({paused:true});
         this.loadTimeLines();
@@ -82,24 +79,25 @@ class player {
                 let tl = tili.createTimeline();
                 this.gsapSlides.push(tili);
                 tl.eventCallback( "onStart", this.updateText, [slide]);
-
+    
                 if (first) {
-                    myDebugger.log("First slide");
-                    this.masterTimeline.add(tl);
-                    let pos = '<+' + slide.transition.tranin.duration;
-                    this.masterTimeline.addLabel(slide.slideNo, pos);
-                    
-                    first = false;
-                }
-                else {
-                    let pos = '>-' + slide.transition.tranin.to.duration;
-                    this.masterTimeline.add(tl, pos);
-                    myDebugger.log("GSAP slide time is " + this.masterTimeline.duration());
-                    pos = '<+' + slide.transition.tranin.to.duration;
-                    this.masterTimeline.addLabel(slide.slideNo, pos );
-                }
-                myDebugger.log("Label is " + slide.slideNo);
+                myDebugger.log("First slide");
+                this.masterTimeline.add(tl);
+                    let pos = '<+' + slide.transition.tranin.to.duration;
+                    //myDebugger.log("Mama says pos = " + pos);
+                this.masterTimeline.addLabel(slide.slideNo, pos);
+                
+                first = false;
             }
+            else {
+                    let pos = '>-' + slide.transition.tranin.to.duration;
+                this.masterTimeline.add(tl, pos);
+                myDebugger.log("GSAP slide time is " + this.masterTimeline.duration());
+                    pos = '<+' + slide.transition.tranin.to.duration;
+                this.masterTimeline.addLabel(slide.slideNo, pos );
+            }
+                myDebugger.log("Label is " + slide.slideNo);
+        }
         }
         catch(e) {
             myDebugger.setMode(4);

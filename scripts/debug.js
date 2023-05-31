@@ -10,6 +10,12 @@ class debugLogger {
         this.filterTxt = "";
 
         this.logData = [];
+        this.enabled = false;
+        if (!this.enabled) {
+            this.logDiv.style.display = "none";
+            return;
+        }
+
         this.clear();
 	}
 
@@ -33,6 +39,9 @@ class debugLogger {
 
     log(message) {
         this.logData.push(message);
+
+        if (!this.enabled)
+            return;
 
         switch(this.mode) {
             case 0:
