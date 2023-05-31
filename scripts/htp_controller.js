@@ -19,6 +19,7 @@
         const prevEvent = new Event('prev');
         const nextEvent = new Event('next');
         const rewindEvent = new Event('rewind');
+        const settings = new Event('settings');
         const fullscreenEvent = new Event('fullscreen');
         //        const volControlEvent = new Event('volume');
         //		const volumeChanged = new CustomEvent('volumeChanged', {
@@ -152,7 +153,7 @@
                 setTimeout(function () {
                     volcont.classList.add('hidden');
                     clearTimeout(volumeBtnTimer);
-                }, 500);
+                }, 800);
 
                 ULE.dispatchEvent(new CustomEvent("volumeChanged", {
                     detail: { volume: volexp }
